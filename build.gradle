@@ -4,10 +4,9 @@ repositories {
     jcenter()
 }
 
-def okhttpDep = 'com.squareup.okhttp3:okhttp:3.8.1'
-
 dependencies {
     compileOnly 'com.squareup.okhttp3:okhttp:3.8.1'
+    compileOnly 'com.google.android:android:2.2.1'
 
     testCompile configurations.compileOnly
     testCompile 'junit:junit:4.12'
