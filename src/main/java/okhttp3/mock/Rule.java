@@ -1,5 +1,6 @@
 package okhttp3.mock;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -79,29 +80,30 @@ public class Rule {
         private Response.Builder response;
         private int times = 1;
         private long delay = 0;
+        private MediaType mediaType;
         private boolean negateNext;
 
         public Builder isGET() {
-            match(new MethodMatcher("GET"));
+            matches(new MethodMatcher("GET"));
             return this;
         }
 
         public Builder isPOST() {
-            match(new MethodMatcher("POST"));
+            matches(new MethodMatcher("POST"));
             return this;
         }
 
         public Builder isPUT() {
-            match(new MethodMatcher("PUT"));
+            matches(new MethodMatcher("PUT"));
             return this;
         }
 
         public Builder isDELETE() {
-            match(new MethodMatcher("DELETE"));
+            matches(new MethodMatcher("DELETE"));
             return this;
         }
 
-        public Builder url(String url) {
+        public Builder urlIs(String url) {
             urlMatches(exact(url));
             return this;
         }
@@ -117,11 +119,11 @@ public class Rule {
         }
 
         public Builder urlMatches(Pattern pattern) {
-            match(new URLMatcher(pattern));
+            matches(new URLMatcher(pattern));
             return this;
         }
 
-        public Builder path(String path) {
+        public Builder pathIs(String path) {
             pathMatches(exact(path));
             return this;
         }
@@ -137,7 +139,7 @@ public class Rule {
         }
 
         public Builder pathMatches(Pattern pattern) {
-            match(new PathMatcher(pattern));
+            matches(new PathMatcher(pattern));
             return this;
         }
 
@@ -146,13 +148,13 @@ public class Rule {
             return this;
         }
 
-        public Builder header(String header, String value) {
+        public Builder headerIs(String header, String value) {
             headerMatches(header, exact(value));
             return this;
         }
 
         public Builder headerMatches(String header, Pattern pattern) {
-            match(new HeaderMatcher(header, pattern));
+            matches(new HeaderMatcher(header, pattern));
             return this;
         }
 
@@ -161,7 +163,7 @@ public class Rule {
             return this;
         }
 
-        public Builder match(Matcher matcher) {
+        public Builder matches(Matcher matcher) {
             if (negateNext) {
                 negateNext = false;
                 matcher = new NotMatcher(matcher);
@@ -185,19 +187,39 @@ public class Rule {
             return this;
         }
 
+        public Builder mediaType(String mediaType) {
+            mediaType(MediaType.parse(mediaType));
+            return this;
+        }
+
+        public Builder mediaType(MediaType mediaType) {
+            this.mediaType = mediaType;
+            return this;
+        }
+
         public Rule andRespond(String body) {
-            andRespond(ResponseBody.create(MediaType.parse("text/plain"), body));
+            if (mediaType == null) {
+                mediaType = MediaType.parse("text/plain");
+            }
+            andRespond(ResponseBody.create(mediaType, body));
             return build();
         }
 
         public Rule andRespond(byte[] body) {
-            andRespond(ResponseBody.create(MediaType.parse("application/octet-stream"), body));
+            andRespond(new ByteArrayInputStream(body));
             return build();
         }
 
         public Rule andRespond(InputStream body) {
+            return andRespond(-1, body);
+        }
+
+        public Rule andRespond(long length, InputStream body) {
             try {
-                andRespond(ResponseBody.create(MediaType.parse("application/octet-stream"), -1, new Buffer().readFrom(body)));
+                if (mediaType == null) {
+                    mediaType = MediaType.parse("application/octet-stream");
+                }
+                andRespond(ResponseBody.create(mediaType, length, new Buffer().readFrom(body)));
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
