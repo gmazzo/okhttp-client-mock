@@ -1,7 +1,16 @@
-apply plugin: 'java'
+plugins {
+    id 'java'
+    id 'com.jfrog.bintray' version '1.7.3'
+    id 'com.github.dcendents.android-maven' version '1.5'
+}
 
-repositories {
-    jcenter()
+allprojects {
+    repositories {
+        jcenter()
+    }
+
+    group = 'com.github.gmazzo'
+    version = '0.1'
 }
 
 dependencies {
@@ -10,4 +19,38 @@ dependencies {
 
     testCompile configurations.compileOnly
     testCompile 'junit:junit:4.12'
+}
+
+def repoDesc = 'A simple OKHttp client mock, using a programmable request interceptor Edit'
+def repoName = 'okhttp-client-mock'
+def repoUrl = "https://github.com/gmazzo/$repoName"
+def repoTags = ['okhttp', 'mock', 'retrofit', 'test' ]
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = repoName
+        desc = repoDesc
+        vcsUrl = "${repoUrl}.git"
+        githubRepo = repoUrl.replaceFirst('\\Qhttps://github.com/\\E', '');
+        githubReleaseNotesFile = 'README.md'
+        licenses = ['MIT']
+        labels = repoTags
+        publicDownloadNumbers = true
+    }
+}
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                name repoDesc
+                url repoUrl
+            }
+        }
+    }
 }
