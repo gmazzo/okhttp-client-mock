@@ -10,10 +10,16 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * An {@link Interceptor} for {@link okhttp3.OkHttpClient}, which with match request and provide pre-configured mock responses.
+ */
 public class MockInterceptor implements Interceptor {
     private final List<Rule> rules = new LinkedList<>();
     private Behavior behavior;
 
+    /**
+     * Creates a MockInterceptor with a default {@link Behavior#STRICT} behavior
+     */
     public MockInterceptor() {
         this(Behavior.STRICT);
     }

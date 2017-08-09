@@ -78,9 +78,10 @@ public class Rule {
     public static class Builder {
         private final List<Matcher> matchers = new LinkedList<>();
         private Response.Builder response;
+        private int responseCode = 200 /*OK*/;
+        private MediaType mediaType;
         private int times = 1;
         private long delay = 0;
-        private MediaType mediaType;
         private boolean negateNext;
 
         public Builder isGET() {
@@ -187,6 +188,11 @@ public class Rule {
             return this;
         }
 
+        public Builder responseCode(int responseCode) {
+            this.responseCode = responseCode;
+            return this;
+        }
+
         public Builder mediaType(String mediaType) {
             mediaType(MediaType.parse(mediaType));
             return this;
@@ -228,13 +234,8 @@ public class Rule {
         }
 
         public Rule andRespond(ResponseBody body) {
-            andRespond(200 /* OK */, body);
-            return build();
-        }
-
-        public Rule andRespond(int code, ResponseBody body) {
             andRespond(new Response.Builder()
-                    .code(code)
+                    .code(responseCode)
                     .body(body));
             return build();
         }

@@ -40,6 +40,7 @@ public class MockInterceptorITTest {
         interceptor.addRule(new Rule.Builder()
                 .isGET()
                 .urlStarts("http://")
+                .responseCode(401)
                 .andRespond(TEST_RESPONSE));
 
         client.newCall(new Request.Builder()

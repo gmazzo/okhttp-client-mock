@@ -1,10 +1,33 @@
 # okhttp-client-mock
 A simple OKHttp client mock, using a programmable request interceptor
 
-## Usage
+## Import
 On your `build.gradle` add:
 ```groovy
 dependencies {
-    test 'gradle.plugin.gmazzo:play-autoincrement-plugin:+'
+    test 'com.github.gmazzo:okhttp-mock:0.1'
 }
 ```
+## Usage
+Create an OkHttp request interceptor and record some rules:
+```java
+MockInterceptor interceptor = new MockInterceptor(Behavior.STRICT);
+interceptor.addRule(new Rule.Builder()
+        .isGET()
+        .urlIs("https://testserver/api/json")
+        .andRespond("{succeed:true}"));
+interceptor.addRule(new Rule.Builder()
+        .isPOST()
+        .urlIs("https://testserver/api/json")
+        .responseCode(401)
+        .andRespond("{succeed:false}"));
+```
+
+Then add the interceptor to your OkHttpClient client and use it as usual:
+```java
+OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .build();
+```
+
+See an example [Integration Test](src/test/java/okhttp3/mock/MockInterceptorITTest.java) with mocked HTTP responses
