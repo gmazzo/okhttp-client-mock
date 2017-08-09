@@ -16,12 +16,13 @@ MockInterceptor interceptor = new MockInterceptor(Behavior.STRICT);
 interceptor.addRule(new Rule.Builder()
         .isGET()
         .urlIs("https://testserver/api/json")
+        .mediaType("appplication/json")
         .andRespond("{succeed:true}"));
 interceptor.addRule(new Rule.Builder()
         .isPOST()
-        .urlIs("https://testserver/api/json")
+        .urlIs("https://testserver/api/login")
         .responseCode(401)
-        .andRespond("{succeed:false}"));
+        .andRespond("invalid user!"));
 ```
 
 Then add the interceptor to your OkHttpClient client and use it as usual:
