@@ -12,7 +12,7 @@ dependencies {
 ## Usage
 Create an OkHttp request interceptor and record some rules:
 ```java
-MockInterceptor interceptor = new MockInterceptor(Behavior.STRICT);
+MockInterceptor interceptor = new MockInterceptor();
 interceptor.addRule(new Rule.Builder()
         .isGET()
         .urlIs("https://testserver/api/json")
