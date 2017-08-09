@@ -85,22 +85,27 @@ public class Rule {
         private boolean negateNext;
 
         public Builder isGET() {
-            matches(new MethodMatcher("GET"));
+            method("GET");
             return this;
         }
 
         public Builder isPOST() {
-            matches(new MethodMatcher("POST"));
+            method("POST");
             return this;
         }
 
         public Builder isPUT() {
-            matches(new MethodMatcher("PUT"));
+            method("PUT");
             return this;
         }
 
         public Builder isDELETE() {
-            matches(new MethodMatcher("DELETE"));
+            method("DELETE");
+            return this;
+        }
+
+        public Builder method(String method) {
+            matches(new MethodMatcher(method));
             return this;
         }
 

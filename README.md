@@ -8,6 +8,7 @@ dependencies {
     test 'com.github.gmazzo:okhttp-mock:0.1'
 }
 ```
+[![Download](https://api.bintray.com/packages/gmazzo/maven/okhttp-client-mock/images/download.svg) ](https://bintray.com/gmazzo/maven/okhttp-client-mock/_latestVersion)
 ## Usage
 Create an OkHttp request interceptor and record some rules:
 ```java
