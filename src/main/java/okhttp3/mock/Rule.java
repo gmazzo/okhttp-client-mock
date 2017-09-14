@@ -1,5 +1,8 @@
 package okhttp3.mock;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import okhttp3.MediaType;
 import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -75,11 +77,9 @@ public class Rule {
         return matchers.toString();
     }
 
-    public static class Builder {
+    public static class Builder implements HttpCodes, MediaTypes {
         private final List<Matcher> matchers = new LinkedList<>();
         private Response.Builder response;
-        private int responseCode = 200 /*OK*/;
-        private MediaType mediaType;
         private int times = 1;
         private long delay = 0;
         private boolean negateNext;
@@ -193,56 +193,47 @@ public class Rule {
             return this;
         }
 
-        public Builder responseCode(int responseCode) {
-            this.responseCode = responseCode;
-            return this;
+        public Rule andRespond(@NonNull String body) {
+            return andRespond(HTTP_OK, body);
         }
 
-        public Builder mediaType(String mediaType) {
-            mediaType(MediaType.parse(mediaType));
-            return this;
+        public Rule andRespond(int code, @NonNull String body) {
+            return andRespond(code, ResponseBody.create(TYPE_PLAIN_TEXT, body));
         }
 
-        public Builder mediaType(MediaType mediaType) {
-            this.mediaType = mediaType;
-            return this;
+        public Rule andRespond(@NonNull byte[] body) {
+            return andRespond(HTTP_OK, body);
         }
 
-        public Rule andRespond(String body) {
-            if (mediaType == null) {
-                mediaType = MediaType.parse("text/plain");
-            }
-            andRespond(ResponseBody.create(mediaType, body));
-            return build();
+        public Rule andRespond(int code, @NonNull byte[] body) {
+            return andRespond(code, new ByteArrayInputStream(body));
         }
 
-        public Rule andRespond(byte[] body) {
-            andRespond(new ByteArrayInputStream(body));
-            return build();
+        public Rule andRespond(@NonNull InputStream body) {
+            return andRespond(HTTP_OK, body);
         }
 
-        public Rule andRespond(InputStream body) {
-            return andRespond(-1, body);
-        }
-
-        public Rule andRespond(long length, InputStream body) {
+        public Rule andRespond(int code, @NonNull InputStream body) {
             try {
-                if (mediaType == null) {
-                    mediaType = MediaType.parse("application/octet-stream");
-                }
-                andRespond(ResponseBody.create(mediaType, length, new Buffer().readFrom(body)));
+                return andRespond(code, ResponseBody.create(TYPE_OCTET_STREAM, -1, new Buffer().readFrom(body)));
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            return build();
         }
 
-        public Rule andRespond(ResponseBody body) {
-            andRespond(new Response.Builder()
-                    .code(responseCode)
+        public Rule andRespond(int code) {
+            return andRespond(code, (ResponseBody) null);
+        }
+
+        public Rule andRespond(@Nullable ResponseBody body) {
+            return andRespond(HTTP_OK, body);
+        }
+
+        public Rule andRespond(int code, @Nullable ResponseBody body) {
+            return andRespond(new Response.Builder()
+                    .code(code)
                     .body(body));
-            return build();
         }
 
         public Rule andRespond(Response.Builder response) {

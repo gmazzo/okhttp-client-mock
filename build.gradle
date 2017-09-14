@@ -10,12 +10,14 @@ allprojects {
     }
 
     group = 'com.github.gmazzo'
-    version = '0.1'
+    version = '0.2'
 }
 
 dependencies {
+    compileOnly fileTree(dir: 'libs', include: '*.jar')
     compileOnly 'com.squareup.okhttp3:okhttp:3.8.1'
     compileOnly 'com.google.android:android:2.2.1'
+    compileOnly 'org.robolectric:robolectric:3.4.2'
 
     testCompile configurations.compileOnly
     testCompile 'junit:junit:4.12'

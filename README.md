@@ -14,15 +14,13 @@ Create an OkHttp request interceptor and record some rules:
 ```java
 MockInterceptor interceptor = new MockInterceptor();
 interceptor.addRule(new Rule.Builder()
-        .isGET()
-        .urlIs("https://testserver/api/json")
-        .mediaType("appplication/json")
-        .andRespond("{succeed:true}"));
-interceptor.addRule(new Rule.Builder()
         .isPOST()
         .urlIs("https://testserver/api/login")
-        .responseCode(401)
-        .andRespond("invalid user!"));
+        .andRespond(401));
+interceptor.addRule(new Rule.Builder()
+        .isGET()
+        .urlIs("https://testserver/api/json")
+        .andRespond("{succeed:true}"));
 ```
 
 Then add the interceptor to your OkHttpClient client and use it as usual:
