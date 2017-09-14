@@ -21,6 +21,7 @@ import okhttp3.mock.matchers.Matcher;
 import okhttp3.mock.matchers.MethodMatcher;
 import okhttp3.mock.matchers.NotMatcher;
 import okhttp3.mock.matchers.PathMatcher;
+import okhttp3.mock.matchers.QueryParamMatcher;
 import okhttp3.mock.matchers.URLMatcher;
 import okio.Buffer;
 
@@ -164,6 +165,21 @@ public class Rule {
             return this;
         }
 
+        public Builder paramMatches(String param, Pattern pattern) {
+            matches(new QueryParamMatcher(param, pattern));
+            return this;
+        }
+
+        public Builder hasParam(String param) {
+            paramMatches(param, any());
+            return this;
+        }
+
+        public Builder paramIs(String param, String value) {
+            paramMatches(param, exact(value));
+            return this;
+        }
+
         public Builder not() {
             negateNext = true;
             return this;
@@ -233,7 +249,7 @@ public class Rule {
         public Rule andRespond(int code, @Nullable ResponseBody body) {
             return andRespond(new Response.Builder()
                     .code(code)
-                    .body(body));
+                    .body(body != null ? body : ResponseBody.create(null, "")));
         }
 
         public Rule andRespond(Response.Builder response) {
