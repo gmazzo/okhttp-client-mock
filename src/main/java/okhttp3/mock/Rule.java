@@ -20,6 +20,7 @@ import okhttp3.mock.matchers.HeaderMatcher;
 import okhttp3.mock.matchers.Matcher;
 import okhttp3.mock.matchers.MethodMatcher;
 import okhttp3.mock.matchers.NotMatcher;
+import okhttp3.mock.matchers.OrMatcher;
 import okhttp3.mock.matchers.PathMatcher;
 import okhttp3.mock.matchers.QueryParamMatcher;
 import okhttp3.mock.matchers.URLMatcher;
@@ -84,6 +85,7 @@ public class Rule {
         private int times = 1;
         private long delay = 0;
         private boolean negateNext;
+        private boolean orNext;
 
         public Builder isGET() {
             method("GET");
@@ -181,7 +183,18 @@ public class Rule {
         }
 
         public Builder not() {
+            if (negateNext) {
+                throw new IllegalStateException("'not()' can't be followed by another 'not()'");
+            }
             negateNext = true;
+            return this;
+        }
+
+        public Builder or() {
+            if (orNext) {
+                throw new IllegalStateException("'or()' can't be followed by another 'or()'");
+            }
+            orNext = true;
             return this;
         }
 
@@ -189,6 +202,15 @@ public class Rule {
             if (negateNext) {
                 negateNext = false;
                 matcher = new NotMatcher(matcher);
+            }
+            if (orNext) {
+                int count = matchers.size();
+                if (count <= 0) {
+                    throw new IllegalStateException("'or()' can't be the first matcher!");
+                }
+
+                orNext = false;
+                matcher = new OrMatcher(matchers.remove(count - 1), matcher);
             }
             matchers.add(matcher);
             return this;
@@ -260,6 +282,9 @@ public class Rule {
         private Rule build() {
             if (negateNext) {
                 throw new IllegalStateException("Misted a predicate after 'not()'!");
+            }
+            if (orNext) {
+                throw new IllegalStateException("Misted a predicate after 'or()'!");
             }
             if (times < 1) {
                 throw new IllegalStateException("Time can't be less than 1!");

@@ -72,6 +72,7 @@ public class MockInterceptorITTest {
         final String json = "{\"succeed\":true}";
 
         interceptor.addRule(new Rule.Builder()
+                .isGET().or().isPOST().or().isPUT()
                 .andRespond(new Response.Builder()
                         .code(200)
                         .body(ResponseBody.create(MediaType.parse("application/json"), json))));
@@ -83,6 +84,34 @@ public class MockInterceptorITTest {
                 .execute()
                 .body()
                 .string());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testWrongOrSyntax1() throws IOException {
+        interceptor.addRule(new Rule.Builder()
+                .or().isGET()
+                .andRespond(HttpCodes.HTTP_CONFLICT));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testWrongOrSyntax2() throws IOException {
+        interceptor.addRule(new Rule.Builder()
+                .isGET().or().or().isPOST()
+                .andRespond(HttpCodes.HTTP_CONFLICT));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testWrongNotSyntax1() throws IOException {
+        interceptor.addRule(new Rule.Builder()
+                .isPUT().not()
+                .andRespond(HttpCodes.HTTP_CONFLICT));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testWrongNotSyntax2() throws IOException {
+        interceptor.addRule(new Rule.Builder()
+                .not().not().isPUT()
+                .andRespond(HttpCodes.HTTP_CONFLICT));
     }
 
 }
