@@ -5,29 +5,29 @@ A simple OKHttp client mock, using a programmable request interceptor
 On your `build.gradle` add:
 ```groovy
 dependencies {
-    testCompile 'com.github.gmazzo:okhttp-mock:0.6'
+    testCompile 'com.github.gmazzo:okhttp-mock:0.7'
 }
 ```
 [![Download](https://api.bintray.com/packages/gmazzo/maven/okhttp-client-mock/images/download.svg) ](https://bintray.com/gmazzo/maven/okhttp-client-mock/_latestVersion)
 ## Usage
-Create an OkHttp request interceptor and record some rules:
+Create an OkHttp request interceptor and record some rules, for example:
 ```java
 MockInterceptor interceptor = new MockInterceptor();
 
 interceptor.addRule(new Rule.Builder()
-        .isGET().or().isPOST().or().isPUT()
-        .urlIs("https://testserver/api/login")
-        .andRespond(401));
+        .get().or().post().or().put()
+        .url("https://testserver/api/login")
+        .respond(HTTP_401_UNAUTHORIZED));
 
 interceptor.addRule(new Rule.Builder()
-        .isGET()
-        .urlIs("https://testserver/api/json")
-        .andRespond("{succeed:true}"));
+        .get()
+        .url("https://testserver/api/json")
+        .respond("{succeed:true}"));
 
 interceptor.addRule(new Rule.Builder()
-        .isGET()
-        .urlIs("https://testserver/api/json")
-        .andRespond(resource("sample.json")));
+        .get()
+        .url("https://testserver/api/json")
+        .respond(resource("sample.json")));
 ```
 
 Then add the interceptor to your OkHttpClient client and use it as usual:
@@ -37,7 +37,7 @@ OkHttpClient client = new OkHttpClient.Builder()
                 .build();
 ```
 
-See an example [Integration Test](src/test/java/okhttp3/m#ock/MockInterceptorITTest.java) with mocked HTTP responses
+Check an example [Integration Test](src/test/java/okhttp3/m#ock/MockInterceptorITTest.java) with mocked HTTP responses
 
 You can use the following helper classes to provide mock responses from resources:
 - `ClasspathResources.resource` to load content from classpath

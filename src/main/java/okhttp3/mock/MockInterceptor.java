@@ -32,8 +32,24 @@ public class MockInterceptor implements Interceptor {
         return Collections.unmodifiableList(rules);
     }
 
-    public MockInterceptor addRule(Rule rule) {
-        rules.add(rule);
+    /**
+     * Adds a new mock rule to this interceptor. Please make sure to a {@link Rule.Builder} and call
+     * one of the final statements {@link Rule.Builder#respond}.
+     * <p>
+     * Example:
+     * <pre>{@code
+     *  interceptor.addRule(new Rule.Builder()
+     *      .isGet()
+     *      .urlStarts("https://someserver/")
+     *      .respond(HTTP_200_OK)
+     *          .header("SomeHeader", "SomeValue"));
+     * }</pre>
+     */
+    public MockInterceptor addRule(Response.Builder builder) {
+        if (!(builder instanceof Rule.Builder.RuleResponseBuilder)) {
+            throw new IllegalArgumentException("This response was not created with Rule.Builder!");
+        }
+        rules.add(((Rule.Builder.RuleResponseBuilder) builder).buildRule());
         return this;
     }
 

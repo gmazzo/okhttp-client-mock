@@ -3,7 +3,6 @@ package okhttp3.mock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import okhttp3.MediaType;
 import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -26,6 +26,13 @@ import okhttp3.mock.matchers.QueryParamMatcher;
 import okhttp3.mock.matchers.URLMatcher;
 import okio.Buffer;
 
+import static okhttp3.mock.HttpCodes.HTTP_200_OK;
+import static okhttp3.mock.HttpMethods.DELETE;
+import static okhttp3.mock.HttpMethods.GET;
+import static okhttp3.mock.HttpMethods.POST;
+import static okhttp3.mock.HttpMethods.PUT;
+import static okhttp3.mock.MediaTypes.MEDIATYPE_RAW_DATA;
+import static okhttp3.mock.MediaTypes.MEDIATYPE_TEXT;
 import static okhttp3.mock.matchers.Matcher.any;
 import static okhttp3.mock.matchers.Matcher.exact;
 import static okhttp3.mock.matchers.Matcher.prefix;
@@ -79,31 +86,31 @@ public class Rule {
         return matchers.toString();
     }
 
-    public static class Builder implements HttpCodes, MediaTypes {
+    public static class Builder {
         private final List<Matcher> matchers = new LinkedList<>();
-        private Response.Builder response;
+        private RuleResponseBuilder response;
         private int times = 1;
         private long delay = 0;
         private boolean negateNext;
         private boolean orNext;
 
-        public Builder isGET() {
-            method("GET");
+        public Builder get() {
+            method(GET);
             return this;
         }
 
-        public Builder isPOST() {
-            method("POST");
+        public Builder post() {
+            method(POST);
             return this;
         }
 
-        public Builder isPUT() {
-            method("PUT");
+        public Builder put() {
+            method(PUT);
             return this;
         }
 
-        public Builder isDELETE() {
-            method("DELETE");
+        public Builder delete() {
+            method(DELETE);
             return this;
         }
 
@@ -112,7 +119,7 @@ public class Rule {
             return this;
         }
 
-        public Builder urlIs(String url) {
+        public Builder url(String url) {
             urlMatches(exact(url));
             return this;
         }
@@ -132,7 +139,7 @@ public class Rule {
             return this;
         }
 
-        public Builder pathIs(String path) {
+        public Builder path(String path) {
             pathMatches(exact(path));
             return this;
         }
@@ -157,7 +164,7 @@ public class Rule {
             return this;
         }
 
-        public Builder headerIs(String header, String value) {
+        public Builder header(String header, String value) {
             headerMatches(header, exact(value));
             return this;
         }
@@ -177,7 +184,7 @@ public class Rule {
             return this;
         }
 
-        public Builder paramIs(String param, String value) {
+        public Builder param(String param, String value) {
             paramMatches(param, exact(value));
             return this;
         }
@@ -231,71 +238,78 @@ public class Rule {
             return this;
         }
 
-        public Rule andRespond(@NonNull String body) {
-            return andRespond(HTTP_OK, body);
+        public Response.Builder respond(@NonNull String body) {
+            return respond(body, MEDIATYPE_TEXT);
         }
 
-        public Rule andRespond(int code, @NonNull String body) {
-            return andRespond(code, ResponseBody.create(TYPE_PLAIN_TEXT, body));
+        public Response.Builder respond(@NonNull String body, @NonNull MediaType mediaType) {
+            return respond(ResponseBody.create(mediaType, body));
         }
 
-        public Rule andRespond(@NonNull byte[] body) {
-            return andRespond(HTTP_OK, body);
+        public Response.Builder respond(@NonNull byte[] body) {
+            return respond(body, MEDIATYPE_RAW_DATA);
         }
 
-        public Rule andRespond(int code, @NonNull byte[] body) {
-            return andRespond(code, new ByteArrayInputStream(body));
+        public Response.Builder respond(@NonNull byte[] body, @NonNull MediaType mediaType) {
+            return respond(ResponseBody.create(mediaType, body));
         }
 
-        public Rule andRespond(@NonNull InputStream body) {
-            return andRespond(HTTP_OK, body);
+        public Response.Builder respond(@NonNull InputStream body) {
+            return respond(-1, body);
         }
 
-        public Rule andRespond(int code, @NonNull InputStream body) {
+        public Response.Builder respond(@NonNull InputStream body, @NonNull MediaType mediaType) {
+            return respond(-1, body, mediaType);
+        }
+
+        public Response.Builder respond(long contentLength, @NonNull InputStream body) {
+            return respond(contentLength, body, MEDIATYPE_RAW_DATA);
+        }
+
+        public Response.Builder respond(long contentLength, @NonNull InputStream body, @NonNull MediaType mediaType) {
             try {
-                return andRespond(code, ResponseBody.create(TYPE_OCTET_STREAM, -1, new Buffer().readFrom(body)));
+                return respond(ResponseBody.create(mediaType, contentLength, new Buffer().readFrom(body)));
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        public Rule andRespond(int code) {
-            return andRespond(code, (ResponseBody) null);
+        public Response.Builder respond(int code) {
+            return respond((ResponseBody) null)
+                    .code(code);
         }
 
-        public Rule andRespond(@Nullable ResponseBody body) {
-            return andRespond(HTTP_OK, body);
+        public Response.Builder respond(@Nullable ResponseBody body) {
+            return this.response = new RuleResponseBuilder(body);
         }
 
-        public Rule andRespond(int code, @Nullable ResponseBody body) {
-            return andRespond(new Response.Builder()
-                    .code(code)
-                    .body(body != null ? body : ResponseBody.create(null, "")));
-        }
+        class RuleResponseBuilder extends Response.Builder {
 
-        public Rule andRespond(Response.Builder response) {
-            this.response = response;
-            return build();
-        }
+            private RuleResponseBuilder(ResponseBody body) {
+                code(HTTP_200_OK);
+                body(body != null ? body : ResponseBody.create(null, ""));
+            }
 
-        private Rule build() {
-            if (negateNext) {
-                throw new IllegalStateException("Misted a predicate after 'not()'!");
+            Rule buildRule() {
+                if (negateNext) {
+                    throw new IllegalStateException("Misted a predicate after 'not()'!");
+                }
+                if (orNext) {
+                    throw new IllegalStateException("Misted a predicate after 'or()'!");
+                }
+                if (times < 1) {
+                    throw new IllegalStateException("Time can't be less than 1!");
+                }
+                if (delay < 0) {
+                    throw new IllegalStateException("Delay can't be less than 0!");
+                }
+                if (response == null) {
+                    throw new IllegalStateException("No response recorded for this rule!");
+                }
+                return new Rule(Collections.unmodifiableList(new ArrayList<>(matchers)), response, times, delay);
             }
-            if (orNext) {
-                throw new IllegalStateException("Misted a predicate after 'or()'!");
-            }
-            if (times < 1) {
-                throw new IllegalStateException("Time can't be less than 1!");
-            }
-            if (delay < 0) {
-                throw new IllegalStateException("Delay can't be less than 0!");
-            }
-            if (response == null) {
-                throw new IllegalStateException("No response recorded for this rule!");
-            }
-            return new Rule(Collections.unmodifiableList(new ArrayList<>(matchers)), response, times, delay);
+
         }
 
     }

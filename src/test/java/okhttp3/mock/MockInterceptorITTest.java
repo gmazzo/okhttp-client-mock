@@ -5,13 +5,11 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 import static okhttp3.mock.ClasspathResources.resource;
+import static okhttp3.mock.MediaTypes.MEDIATYPE_JSON;
 import static org.junit.Assert.assertEquals;
 
 public class MockInterceptorITTest {
@@ -30,9 +28,9 @@ public class MockInterceptorITTest {
     @Test
     public void testURLStartsWith() throws IOException {
         interceptor.addRule(new Rule.Builder()
-                .isGET()
+                .get()
                 .urlStarts("https://")
-                .andRespond(TEST_RESPONSE));
+                .respond(TEST_RESPONSE));
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
@@ -44,9 +42,10 @@ public class MockInterceptorITTest {
     @Test(expected = AssertionError.class)
     public void testURLStartsWith_Fail() throws IOException {
         interceptor.addRule(new Rule.Builder()
-                .isGET()
+                .get()
                 .urlStarts("http://")
-                .andRespond(401, TEST_RESPONSE));
+                .respond(TEST_RESPONSE)
+                .code(401));
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
@@ -58,7 +57,7 @@ public class MockInterceptorITTest {
     @Test
     public void testResourceResponse() throws IOException {
         interceptor.addRule(new Rule.Builder()
-                .andRespond(resource("sample.json")));
+                .respond(resource("sample.json")));
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
@@ -72,10 +71,8 @@ public class MockInterceptorITTest {
         final String json = "{\"succeed\":true}";
 
         interceptor.addRule(new Rule.Builder()
-                .isGET().or().isPOST().or().isPUT()
-                .andRespond(new Response.Builder()
-                        .code(200)
-                        .body(ResponseBody.create(MediaType.parse("application/json"), json))));
+                .get().or().post().or().put()
+                .respond(json, MEDIATYPE_JSON));
 
         assertEquals(json, client.newCall(new Request.Builder()
                 .url(TEST_URL)
@@ -89,29 +86,29 @@ public class MockInterceptorITTest {
     @Test(expected = IllegalStateException.class)
     public void testWrongOrSyntax1() throws IOException {
         interceptor.addRule(new Rule.Builder()
-                .or().isGET()
-                .andRespond(HttpCodes.HTTP_CONFLICT));
+                .or().get()
+                .respond(HttpCodes.HTTP_409_CONFLICT));
     }
 
     @Test(expected = IllegalStateException.class)
     public void testWrongOrSyntax2() throws IOException {
         interceptor.addRule(new Rule.Builder()
-                .isGET().or().or().isPOST()
-                .andRespond(HttpCodes.HTTP_CONFLICT));
+                .get().or().or().post()
+                .respond(HttpCodes.HTTP_409_CONFLICT));
     }
 
     @Test(expected = IllegalStateException.class)
     public void testWrongNotSyntax1() throws IOException {
         interceptor.addRule(new Rule.Builder()
-                .isPUT().not()
-                .andRespond(HttpCodes.HTTP_CONFLICT));
+                .put().not()
+                .respond(HttpCodes.HTTP_409_CONFLICT));
     }
 
     @Test(expected = IllegalStateException.class)
     public void testWrongNotSyntax2() throws IOException {
         interceptor.addRule(new Rule.Builder()
-                .not().not().isPUT()
-                .andRespond(HttpCodes.HTTP_CONFLICT));
+                .not().not().put()
+                .respond(HttpCodes.HTTP_409_CONFLICT));
     }
 
 }
