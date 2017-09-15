@@ -18,7 +18,7 @@ public final class ClasspathResources {
      * Loads the content from the given classpath resource
      */
     public static InputStream resource(ClassLoader classLoader, String name) {
-        return classLoader.getResourceAsStream("/" + name);
+        return classLoader.getResourceAsStream(name);
     }
 
     private ClasspathResources() {

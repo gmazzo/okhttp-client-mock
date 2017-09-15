@@ -11,6 +11,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+import static okhttp3.mock.ClasspathResources.resource;
 import static org.junit.Assert.assertEquals;
 
 public class MockInterceptorITTest {
@@ -46,6 +47,18 @@ public class MockInterceptorITTest {
                 .isGET()
                 .urlStarts("http://")
                 .andRespond(401, TEST_RESPONSE));
+
+        client.newCall(new Request.Builder()
+                .url(TEST_URL)
+                .get()
+                .build())
+                .execute();
+    }
+
+    @Test
+    public void testResourceResponse() throws IOException {
+        interceptor.addRule(new Rule.Builder()
+                .andRespond(resource("sample.json")));
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)

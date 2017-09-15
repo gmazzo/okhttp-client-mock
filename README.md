@@ -13,14 +13,21 @@ dependencies {
 Create an OkHttp request interceptor and record some rules:
 ```java
 MockInterceptor interceptor = new MockInterceptor();
+
 interceptor.addRule(new Rule.Builder()
         .isPOST()
         .urlIs("https://testserver/api/login")
         .andRespond(401));
+
 interceptor.addRule(new Rule.Builder()
         .isGET()
         .urlIs("https://testserver/api/json")
         .andRespond("{succeed:true}"));
+
+interceptor.addRule(new Rule.Builder()
+        .isGET()
+        .urlIs("https://testserver/api/json")
+        .andRespond(resource("sample.json")));
 ```
 
 Then add the interceptor to your OkHttpClient client and use it as usual:
@@ -30,4 +37,10 @@ OkHttpClient client = new OkHttpClient.Builder()
                 .build();
 ```
 
-See an example [Integration Test](src/test/java/okhttp3/mock/MockInterceptorITTest.java) with mocked HTTP responses
+See an example [Integration Test](src/test/java/okhttp3/m#ock/MockInterceptorITTest.java) with mocked HTTP responses
+
+You can use the following helper classes to provide mock responses from resources:
+- `ClasspathResources.resource` to load content from classpath
+- `AndroidResources.asset` to load content from an Android's asset
+- `AndroidResources.raw` to load content from an Android's raw resource
+- `RoboResources.asset` and `RoboResources.raw` if you are running *Roboelectric* tests
