@@ -7,6 +7,7 @@ plugins {
 allprojects {
     repositories {
         jcenter()
+        maven { url 'https://maven.google.com' }
     }
 
     group = 'com.github.gmazzo'
@@ -14,10 +15,10 @@ allprojects {
 }
 
 dependencies {
-    compileOnly fileTree(dir: 'libs', include: '*.jar')
     compileOnly 'com.squareup.okhttp3:okhttp:3.8.1'
-    compileOnly 'com.google.android:android:2.2.1'
     compileOnly 'org.robolectric:robolectric:3.4.2'
+    compileOnly 'com.android.support:support-annotations:25.3.1'
+    compileOnly 'com.google.android:android:2.2.1'
 
     testCompile configurations.compileOnly
     testCompile 'junit:junit:4.12'
