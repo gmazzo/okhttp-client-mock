@@ -10,7 +10,7 @@ allprojects {
     }
 
     group = 'com.github.gmazzo'
-    version = '0.4'
+    version = '0.5'
 }
 
 dependencies {
