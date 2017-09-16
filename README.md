@@ -17,17 +17,18 @@ MockInterceptor interceptor = new MockInterceptor();
 interceptor.addRule(new Rule.Builder()
         .get().or().post().or().put()
         .url("https://testserver/api/login")
-        .respond(HTTP_401_UNAUTHORIZED));
+        .respond(HTTP_401_UNAUTHORIZED))
+        .header("WWW-Authenticate", "Basic");
 
 interceptor.addRule(new Rule.Builder()
         .get()
         .url("https://testserver/api/json")
-        .respond("{succeed:true}"));
+        .respond(MEDIATYPE_JSON, "{succeed:true}"));
 
 interceptor.addRule(new Rule.Builder()
         .get()
         .url("https://testserver/api/json")
-        .respond(resource("sample.json")));
+        .respond(MEDIATYPE_JSON, resource("sample.json")));
 ```
 
 Then add the interceptor to your OkHttpClient client and use it as usual:
