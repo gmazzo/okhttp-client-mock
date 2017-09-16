@@ -14,4 +14,9 @@ public class MethodMatcher implements Matcher {
         return method.equalsIgnoreCase(request.method());
     }
 
+    @Override
+    public String toString() {
+        return "method(" + method + ")";
+    }
+
 }
