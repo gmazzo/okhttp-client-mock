@@ -5,10 +5,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.mock.matchers.Matcher;
 
 /**
  * An {@link Interceptor} for {@link okhttp3.OkHttpClient}, which with match request and provide pre-configured mock responses.
@@ -18,10 +20,10 @@ public class MockInterceptor implements Interceptor {
     private Behavior behavior;
 
     /**
-     * Creates a MockInterceptor with a default {@link Behavior#STRICT} behavior
+     * Creates a MockInterceptor with a default {@link Behavior#SEQUENTIAL} behavior
      */
     public MockInterceptor() {
-        this(Behavior.STRICT);
+        this(Behavior.SEQUENTIAL);
     }
 
     public MockInterceptor(Behavior behavior) {
@@ -53,7 +55,7 @@ public class MockInterceptor implements Interceptor {
         return this;
     }
 
-    public MockInterceptor clear() {
+    public MockInterceptor reset() {
         rules.clear();
         return this;
     }
@@ -81,11 +83,25 @@ public class MockInterceptor implements Interceptor {
             if (response != null) {
                 return response;
 
-            } else if (behavior == Behavior.SORTED) {
-                throw new AssertionError("Not matched next rule: " + rule + ", request=" + request);
+            } else if (behavior == Behavior.SEQUENTIAL) {
+                StringBuilder sb = new StringBuilder("Not matched next rule: ");
+                sb.append(rule);
+                sb.append(", request=");
+                sb.append(request);
+                sb.append("\nFailed to match:");
+                int i = 0;
+                for (Map.Entry<Matcher, String> e : rule.getFailReason(request).entrySet()) {
+                    sb.append("\n\t");
+                    sb.append(++i);
+                    sb.append(": ");
+                    sb.append(e.getValue());
+                    sb.append("; matcher=");
+                    sb.append(e.getKey());
+                }
+                throw new AssertionError(sb.toString());
             }
         }
-        if (behavior == Behavior.STRICT) {
+        if (behavior == Behavior.UNORDERED) {
             StringBuilder sb = new StringBuilder("Not matched any rule: request=");
             sb.append(request);
             if (rules.isEmpty()) {

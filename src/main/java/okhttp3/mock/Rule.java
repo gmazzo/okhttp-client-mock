@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
@@ -75,6 +77,16 @@ public class Rule {
                 .request(request)
                 .message("Rule response " + this)
                 .build();
+    }
+
+    public Map<Matcher, String> getFailReason(Request request) {
+        Map<Matcher, String> reasons = new LinkedHashMap<>();
+        for (Matcher matcher : matchers) {
+            if (!matcher.matches(request)) {
+                reasons.put(matcher, matcher.failReason(request));
+            }
+        }
+        return reasons;
     }
 
     public boolean isConsumed() {
@@ -217,7 +229,14 @@ public class Rule {
                 }
 
                 orNext = false;
-                matcher = new OrMatcher(matchers.remove(count - 1), matcher);
+                Matcher prev = matchers.remove(count - 1);
+                if (prev instanceof OrMatcher) {
+                    ((OrMatcher) prev).add(matcher);
+                    matcher = prev;
+
+                } else {
+                    matcher = new OrMatcher(prev, matcher);
+                }
             }
             matchers.add(matcher);
             return this;

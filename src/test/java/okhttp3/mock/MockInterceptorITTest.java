@@ -21,7 +21,7 @@ public class MockInterceptorITTest {
     @Before
     public void setup() {
         client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor = new MockInterceptor(Behavior.STRICT))
+                .addInterceptor(interceptor = new MockInterceptor(Behavior.UNORDERED))
                 .build();
     }
 
@@ -70,7 +70,7 @@ public class MockInterceptorITTest {
     public void testCustomResponse() throws IOException {
         final String json = "{\"succeed\":true}";
 
-        interceptor.addRule(new Rule.Builder()
+        interceptor.behavior(Behavior.SEQUENTIAL).addRule(new Rule.Builder()
                 .get().or().post().or().put()
                 .respond(json, MEDIATYPE_JSON));
 
@@ -109,6 +109,20 @@ public class MockInterceptorITTest {
         interceptor.addRule(new Rule.Builder()
                 .not().not().put()
                 .respond(HttpCodes.HTTP_409_CONFLICT));
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testFailReasonSequential() throws IOException {
+        interceptor.behavior(Behavior.SEQUENTIAL)
+                .addRule(new Rule.Builder()
+                        .get().or().post().or().put()
+                        .respond("OK"));
+
+        client.newCall(new Request.Builder()
+                .url(TEST_URL)
+                .delete()
+                .build())
+                .execute();
     }
 
 }

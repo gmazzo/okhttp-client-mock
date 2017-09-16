@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 
 import okhttp3.Request;
 
+import static okhttp3.mock.matchers.Matcher.reason;
+
 public abstract class PatternMatcher implements Matcher {
     protected final Pattern pattern;
 
@@ -19,4 +21,9 @@ public abstract class PatternMatcher implements Matcher {
         return text != null && pattern.matcher(text).matches();
     }
 
+    @Override
+    public String failReason(Request request) {
+        String actual = getText(request);
+        return reason(pattern.pattern(), actual);
+    }
 }

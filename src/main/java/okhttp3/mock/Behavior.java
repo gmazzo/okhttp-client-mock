@@ -8,12 +8,12 @@ public enum Behavior {
     /**
      * The requests must match the same order the {@link Rule}s were configured, an {@link AssertionError} will be thrown otherwise.
      */
-    SORTED,
+    SEQUENTIAL,
 
     /**
      * The requests must match the configured {@link Rule}s at any other, if no rule applies a {@link AssertionError} will be thrown.
      */
-    STRICT,
+    UNORDERED,
 
     /**
      * The requests must match the configured {@link Rule}s at any other, if no rule applies a regular request will be performed instead.

@@ -1,24 +1,62 @@
 package okhttp3.mock.matchers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import okhttp3.Request;
 
 public class OrMatcher implements Matcher {
-    private final Matcher left;
-    private final Matcher right;
+    private final List<Matcher> matchers = new ArrayList<>();
 
     public OrMatcher(Matcher left, Matcher right) {
-        this.left = left;
-        this.right = right;
+        add(left);
+        add(right);
+    }
+
+    public void add(Matcher matcher) {
+        matchers.add(matcher);
     }
 
     @Override
     public boolean matches(Request request) {
-        return left.matches(request) || right.matches(request);
+        for (Matcher matcher : matchers) {
+            if (matcher.matches(request)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String failReason(Request request) {
+        StringBuilder sb = new StringBuilder("or(");
+        boolean first = true;
+        for (Matcher matcher : matchers) {
+            if (first) {
+                first = false;
+            } else {
+                sb.append(", ");
+            }
+            sb.append(matcher.failReason(request));
+        }
+        sb.append(')');
+        return sb.toString();
     }
 
     @Override
     public String toString() {
-        return "or(" + left + "," + right + ")";
+        StringBuilder sb = new StringBuilder("or(");
+        boolean first = true;
+        for (Matcher matcher : matchers) {
+            if (first) {
+                first = false;
+            } else {
+                sb.append(',');
+            }
+            sb.append(matcher);
+        }
+        sb.append(')');
+        return sb.toString();
     }
 
 }

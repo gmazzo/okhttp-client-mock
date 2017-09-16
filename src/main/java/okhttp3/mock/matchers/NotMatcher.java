@@ -15,6 +15,11 @@ public class NotMatcher implements Matcher {
     }
 
     @Override
+    public String failReason(Request request) {
+        return "not(" + matcher.failReason(request) + ")";
+    }
+
+    @Override
     public String toString() {
         return "not(" + matcher + ")";
     }
