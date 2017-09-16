@@ -82,11 +82,26 @@ public class MockInterceptor implements Interceptor {
                 return response;
 
             } else if (behavior == Behavior.SORTED) {
-                throw new AssertionError("Not mached next rule: " + rule + ", request=" + request);
+                throw new AssertionError("Not matched next rule: " + rule + ", request=" + request);
             }
         }
         if (behavior == Behavior.STRICT) {
-            throw new AssertionError("Not mached any rule: request=" + request);
+            StringBuilder sb = new StringBuilder("Not matched any rule: request=");
+            sb.append(request);
+            if (rules.isEmpty()) {
+                sb.append("\nNo remaining rules!");
+
+            } else {
+                sb.append("\nRemaining rules:");
+                int i = 0;
+                for (Rule rule : rules) {
+                    sb.append("\n\t");
+                    sb.append(++i);
+                    sb.append(": ");
+                    sb.append(rule);
+                }
+            }
+            throw new AssertionError(sb.toString());
         }
         return chain.proceed(request);
     }
