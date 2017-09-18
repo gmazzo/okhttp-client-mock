@@ -5,7 +5,7 @@ A simple OKHttp client mock, using a programmable request interceptor
 On your `build.gradle` add:
 ```groovy
 dependencies {
-    testCompile 'com.github.gmazzo:okhttp-mock:1.0.0'
+    testCompile 'com.github.gmazzo:okhttp-mock:1.0.1'
 }
 ```
 [![Download](https://api.bintray.com/packages/gmazzo/maven/okhttp-client-mock/images/download.svg) ](https://bintray.com/gmazzo/maven/okhttp-client-mock/_latestVersion)
@@ -43,5 +43,5 @@ Check an example [Integration Test](src/test/java/okhttp3/m#ock/MockInterceptorI
 You can use the following helper classes to provide mock responses from resources:
 - `ClasspathResources.resource` to load content from classpath
 - `AndroidResources.asset` to load content from an Android's asset
-- `AndroidResources.raw` to load content from an Android's raw resource
-- `RoboResources.asset` and `RoboResources.raw` if you are running *Roboelectric* tests
+- `AndroidResources.rawRes` to load content from an Android's raw resource
+- `RoboResources.asset` and `RoboResources.rawRes` if you are running *Roboelectric* tests

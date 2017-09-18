@@ -1,6 +1,5 @@
 package okhttp3.mock;
 
-import android.content.Context;
 import android.support.annotation.RawRes;
 
 import org.robolectric.RuntimeEnvironment;
@@ -22,8 +21,8 @@ public final class RoboResources {
     /**
      * Loads the content from the given raw resource
      */
-    public static InputStream raw(Context context, @RawRes int resource) {
-        return AndroidResources.raw(RuntimeEnvironment.application, resource);
+    public static InputStream rawRes(@RawRes int resource) {
+        return AndroidResources.rawRes(RuntimeEnvironment.application, resource);
     }
 
     private RoboResources() {

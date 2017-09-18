@@ -26,7 +26,7 @@ public final class AndroidResources {
     /**
      * Loads the content from the given raw resource
      */
-    public static InputStream raw(Context context, @RawRes int resource) {
+    public static InputStream rawRes(Context context, @RawRes int resource) {
         return context.getResources().openRawResource(resource);
     }
 
