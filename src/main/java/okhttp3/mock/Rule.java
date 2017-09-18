@@ -35,10 +35,10 @@ import static okhttp3.mock.HttpMethods.POST;
 import static okhttp3.mock.HttpMethods.PUT;
 import static okhttp3.mock.MediaTypes.MEDIATYPE_RAW_DATA;
 import static okhttp3.mock.MediaTypes.MEDIATYPE_TEXT;
-import static okhttp3.mock.matchers.Matcher.any;
-import static okhttp3.mock.matchers.Matcher.exact;
-import static okhttp3.mock.matchers.Matcher.prefix;
-import static okhttp3.mock.matchers.Matcher.suffix;
+import static okhttp3.mock.matchers.MatcherHelper.any;
+import static okhttp3.mock.matchers.MatcherHelper.exact;
+import static okhttp3.mock.matchers.MatcherHelper.prefix;
+import static okhttp3.mock.matchers.MatcherHelper.suffix;
 
 public class Rule {
     private final List<Matcher> matchers;

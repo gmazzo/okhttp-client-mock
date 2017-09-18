@@ -2,7 +2,7 @@ package okhttp3.mock.matchers;
 
 import okhttp3.Request;
 
-import static okhttp3.mock.matchers.Matcher.reason;
+import static okhttp3.mock.matchers.MatcherHelper.reason;
 
 public class MethodMatcher implements Matcher {
     private final String method;

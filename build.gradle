@@ -4,15 +4,15 @@ plugins {
     id 'com.github.dcendents.android-maven' version '1.5'
 }
 
-allprojects {
-    repositories {
-        jcenter()
-        maven { url 'https://maven.google.com' }
-    }
-
-    group = 'com.github.gmazzo'
-    version = '1.0.1'
+repositories {
+    jcenter()
+    maven { url 'https://maven.google.com' }
 }
+
+group = 'com.github.gmazzo'
+version = '1.0.2'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 dependencies {
     compileOnly 'com.squareup.okhttp3:okhttp:3.8.1'
@@ -27,7 +27,7 @@ dependencies {
 def repoDesc = 'A simple OKHttp client mock, using a programmable request interceptor Edit'
 def repoName = 'okhttp-client-mock'
 def repoUrl = "https://github.com/gmazzo/$repoName"
-def repoTags = ['okhttp', 'mock', 'retrofit', 'test' ]
+def repoTags = ['okhttp', 'mock', 'retrofit', 'test']
 
 bintray {
     user = System.getenv('BINTRAY_USER')
