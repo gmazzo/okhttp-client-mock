@@ -41,7 +41,7 @@ public class MockInterceptor implements Interceptor {
      * Example:
      * <pre>{@code
      *  interceptor.addRule(new Rule.Builder()
-     *      .isGet()
+     *      .get()
      *      .urlStarts("https://someserver/")
      *      .respond(HTTP_200_OK)
      *          .header("SomeHeader", "SomeValue"));
@@ -101,25 +101,28 @@ public class MockInterceptor implements Interceptor {
                 throw new AssertionError(sb.toString());
             }
         }
-        if (behavior == Behavior.UNORDERED) {
-            StringBuilder sb = new StringBuilder("Not matched any rule: request=");
-            sb.append(request);
-            if (rules.isEmpty()) {
-                sb.append("\nNo remaining rules!");
 
-            } else {
-                sb.append("\nRemaining rules:");
-                int i = 0;
-                for (Rule rule : rules) {
-                    sb.append("\n\t");
-                    sb.append(++i);
-                    sb.append(": ");
-                    sb.append(rule);
-                }
-            }
-            throw new AssertionError(sb.toString());
+        // no matched rules or no more rules
+        if (behavior == Behavior.RELAYED) {
+            return chain.proceed(request);
         }
-        return chain.proceed(request);
+
+        StringBuilder sb = new StringBuilder("Not matched any rule: request=");
+        sb.append(request);
+        if (rules.isEmpty()) {
+            sb.append("\nNo remaining rules!");
+
+        } else {
+            sb.append("\nRemaining rules:");
+            int i = 0;
+            for (Rule rule : rules) {
+                sb.append("\n\t");
+                sb.append(++i);
+                sb.append(": ");
+                sb.append(rule);
+            }
+        }
+        throw new AssertionError(sb.toString());
     }
 
 }
