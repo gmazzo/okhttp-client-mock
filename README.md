@@ -23,12 +23,12 @@ interceptor.addRule(new Rule.Builder()
 interceptor.addRule(new Rule.Builder()
         .get()
         .url("https://testserver/api/json")
-        .respond(MEDIATYPE_JSON, "{succeed:true}"));
+        .respond("{succeed:true}", MEDIATYPE_JSON));
 
 interceptor.addRule(new Rule.Builder()
         .get()
         .url("https://testserver/api/json")
-        .respond(MEDIATYPE_JSON, resource("sample.json")));
+        .respond(resource("sample.json"), MEDIATYPE_JSON));
 ```
 
 Then add the interceptor to your OkHttpClient client and use it as usual:
