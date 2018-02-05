@@ -1,7 +1,7 @@
 package okhttp3.mock;
 
 /**
- * Defines the available behavior modes for an {@link MockInterceptor}, regarding the {@link Rule}s configured on it.
+ * Defines the available behavior modes for a {@link MockInterceptor}, regarding the {@link Rule}s configured on it.
  */
 public enum Behavior {
 
@@ -11,12 +11,12 @@ public enum Behavior {
     SEQUENTIAL,
 
     /**
-     * The requests must match the configured {@link Rule}s at any other, if no rule applies a {@link AssertionError} will be thrown.
+     * The requests must match the configured {@link Rule}s at any order, if no rule applies an {@link AssertionError} will be thrown.
      */
     UNORDERED,
 
     /**
-     * The requests must match the configured {@link Rule}s at any other, if no rule applies a regular request will be performed instead.
+     * The requests must match the configured {@link Rule}s at any order, if no rule applies a regular request will be performed instead.
      */
     RELAYED
 
