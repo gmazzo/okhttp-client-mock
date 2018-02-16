@@ -5,7 +5,7 @@ A simple OKHttp client mock, using a programmable request interceptor
 On your `build.gradle` add:
 ```groovy
 dependencies {
-    testCompile 'com.github.gmazzo:okhttp-mock:1.0.3'
+    testCompile 'com.github.gmazzo:okhttp-mock:1.0.4'
 }
 ```
 [![Download](https://api.bintray.com/packages/gmazzo/maven/okhttp-client-mock/images/download.svg) ](https://bintray.com/gmazzo/maven/okhttp-client-mock/_latestVersion)
