@@ -9,6 +9,8 @@ dependencies {
 }
 ```
 [![Download](https://api.bintray.com/packages/gmazzo/maven/okhttp-client-mock/images/download.svg) ](https://bintray.com/gmazzo/maven/okhttp-client-mock/_latestVersion)
+[![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-OKHttp%20client%20mock-green.svg?style=flat )](https://android-arsenal.com/details/1/6763)
+
 ## Usage
 Create an OkHttp request interceptor and record some rules, for example:
 ```java
