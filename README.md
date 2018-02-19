@@ -46,4 +46,4 @@ You can use the following helper classes to provide mock responses from resource
 - `ClasspathResources.resource` to load content from classpath
 - `AndroidResources.asset` to load content from an Android's asset
 - `AndroidResources.rawRes` to load content from an Android's raw resource
-- `RoboResources.asset` and `RoboResources.rawRes` if you are running *Roboelectric* tests
+- `RoboResources.asset` and `RoboResources.rawRes` if you are running [Roboelectric](https://github.com/robolectric/robolectric) tests
