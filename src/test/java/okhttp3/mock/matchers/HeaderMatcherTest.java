@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 
 import okhttp3.Request;
 
-import static okhttp3.mock.matchers.Matcher.any;
-import static okhttp3.mock.matchers.Matcher.exact;
+import static okhttp3.mock.matchers.MatcherHelper.any;
+import static okhttp3.mock.matchers.MatcherHelper.exact;
 import static org.junit.Assert.assertEquals;
 
 public class HeaderMatcherTest {
