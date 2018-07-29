@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -100,15 +99,20 @@ public class Rule {
 
     public static class Builder {
         private final List<Matcher> matchers = new LinkedList<>();
-        private RuleResponseBuilder response;
         private int times = 1;
         private long delay = 0;
         private boolean negateNext;
         private boolean orNext;
+        private FinalRuleBuilder response;
 
         public Builder get() {
             method(GET);
             return this;
+        }
+
+        public Builder get(String url) {
+            get();
+            return url(url);
         }
 
         public Builder post() {
@@ -116,14 +120,29 @@ public class Rule {
             return this;
         }
 
+        public Builder post(String url) {
+            post();
+            return url(url);
+        }
+
         public Builder put() {
             method(PUT);
             return this;
         }
 
+        public Builder put(String url) {
+            put();
+            return url(url);
+        }
+
         public Builder delete() {
             method(DELETE);
             return this;
+        }
+
+        public Builder delete(String url) {
+            delete();
+            return url(url);
         }
 
         public Builder method(String method) {
@@ -295,20 +314,25 @@ public class Rule {
         }
 
         public Response.Builder respond(int code) {
-            return respond((ResponseBody) null)
-                    .code(code);
+            return respond(code, (ResponseBody) null);
         }
 
         public Response.Builder respond(@Nullable ResponseBody body) {
-            return this.response = new RuleResponseBuilder(body);
+            return respond(HTTP_200_OK, body);
         }
 
-        class RuleResponseBuilder extends Response.Builder {
+        public Response.Builder respond(int code, @Nullable ResponseBody body) {
+            this.response = new FinalRuleBuilder();
+            this.response.code(code)
+                    .body(body != null ? body : ResponseBody.create(null, ""));
+            onRespond(this.response);
+            return this.response;
+        }
 
-            private RuleResponseBuilder(ResponseBody body) {
-                code(HTTP_200_OK);
-                body(body != null ? body : ResponseBody.create(null, ""));
-            }
+        void onRespond(FinalRuleBuilder response) {
+        }
+
+        class FinalRuleBuilder extends Response.Builder {
 
             Rule buildRule() {
                 if (negateNext) {
@@ -326,7 +350,7 @@ public class Rule {
                 if (response == null) {
                     throw new IllegalStateException("No response recorded for this rule!");
                 }
-                return new Rule(Collections.unmodifiableList(new ArrayList<>(matchers)), response, times, delay);
+                return new Rule(Collections.unmodifiableList(matchers), response, times, delay);
             }
 
         }

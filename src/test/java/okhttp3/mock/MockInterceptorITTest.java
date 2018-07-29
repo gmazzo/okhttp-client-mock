@@ -26,11 +26,24 @@ public class MockInterceptorITTest {
     }
 
     @Test
+    public void testGet() throws IOException {
+        interceptor.addRule()
+                .get(TEST_URL)
+                .respond(TEST_RESPONSE);
+
+        client.newCall(new Request.Builder()
+                .url(TEST_URL)
+                .get()
+                .build())
+                .execute();
+    }
+
+    @Test
     public void testURLStartsWith() throws IOException {
-        interceptor.addRule(new Rule.Builder()
+        interceptor.addRule()
                 .get()
                 .urlStarts("https://")
-                .respond(TEST_RESPONSE));
+                .respond(TEST_RESPONSE);
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
@@ -41,11 +54,11 @@ public class MockInterceptorITTest {
 
     @Test(expected = AssertionError.class)
     public void testURLStartsWith_Fail() throws IOException {
-        interceptor.addRule(new Rule.Builder()
+        interceptor.addRule()
                 .get()
                 .urlStarts("http://")
                 .respond(TEST_RESPONSE)
-                .code(401));
+                .code(401);
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
@@ -56,8 +69,8 @@ public class MockInterceptorITTest {
 
     @Test
     public void testResourceResponse() throws IOException {
-        interceptor.addRule(new Rule.Builder()
-                .respond(resource("sample.json")));
+        interceptor.addRule()
+                .respond(resource("sample.json"));
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
@@ -70,9 +83,9 @@ public class MockInterceptorITTest {
     public void testCustomResponse() throws IOException {
         final String json = "{\"succeed\":true}";
 
-        interceptor.behavior(Behavior.SEQUENTIAL).addRule(new Rule.Builder()
+        interceptor.behavior(Behavior.SEQUENTIAL).addRule()
                 .get().or().post().or().put()
-                .respond(json, MEDIATYPE_JSON));
+                .respond(json, MEDIATYPE_JSON);
 
         assertEquals(json, client.newCall(new Request.Builder()
                 .url(TEST_URL)
@@ -84,39 +97,39 @@ public class MockInterceptorITTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testWrongOrSyntax1() throws IOException {
-        interceptor.addRule(new Rule.Builder()
+    public void testWrongOrSyntax1() {
+        interceptor.addRule()
                 .or().get()
-                .respond(HttpCodes.HTTP_409_CONFLICT));
+                .respond(HttpCodes.HTTP_409_CONFLICT);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testWrongOrSyntax2() throws IOException {
-        interceptor.addRule(new Rule.Builder()
+    public void testWrongOrSyntax2() {
+        interceptor.addRule()
                 .get().or().or().post()
-                .respond(HttpCodes.HTTP_409_CONFLICT));
+                .respond(HttpCodes.HTTP_409_CONFLICT);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testWrongNotSyntax1() throws IOException {
-        interceptor.addRule(new Rule.Builder()
+    public void testWrongNotSyntax1() {
+        interceptor.addRule()
                 .put().not()
-                .respond(HttpCodes.HTTP_409_CONFLICT));
+                .respond(HttpCodes.HTTP_409_CONFLICT);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testWrongNotSyntax2() throws IOException {
-        interceptor.addRule(new Rule.Builder()
+    public void testWrongNotSyntax2() {
+        interceptor.addRule()
                 .not().not().put()
-                .respond(HttpCodes.HTTP_409_CONFLICT));
+                .respond(HttpCodes.HTTP_409_CONFLICT);
     }
 
     @Test(expected = AssertionError.class)
     public void testFailReasonSequential() throws IOException {
         interceptor.behavior(Behavior.SEQUENTIAL)
-                .addRule(new Rule.Builder()
-                        .get().or().post().or().put()
-                        .respond("OK"));
+                .addRule()
+                .get().or().post().or().put()
+                .respond("OK");
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)

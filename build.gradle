@@ -10,7 +10,7 @@ repositories {
 }
 
 group = 'com.github.gmazzo'
-version = '1.0.4'
+version = '1.1.0'
 archivesBaseName = 'okhttp-mock'
 
 sourceCompatibility = 1.7
@@ -41,7 +41,7 @@ bintray {
         name = repoName
         desc = repoDesc
         vcsUrl = "${repoUrl}.git"
-        githubRepo = repoUrl.replaceFirst('\\Qhttps://github.com/\\E', '');
+        githubRepo = repoUrl.replaceFirst('\\Qhttps://github.com/\\E', '')
         githubReleaseNotesFile = 'README.md'
         licenses = ['MIT']
         labels = repoTags
@@ -74,3 +74,5 @@ artifacts {
     archives javadocJar
     archives sourcesJar
 }
+
+task publish(dependsOn: bintrayUpload)

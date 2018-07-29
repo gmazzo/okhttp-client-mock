@@ -16,21 +16,19 @@ Create an OkHttp request interceptor and record some rules, for example:
 ```java
 MockInterceptor interceptor = new MockInterceptor();
 
-interceptor.addRule(new Rule.Builder()
+interceptor.addRule()
         .get().or().post().or().put()
         .url("https://testserver/api/login")
         .respond(HTTP_401_UNAUTHORIZED))
         .header("WWW-Authenticate", "Basic");
 
-interceptor.addRule(new Rule.Builder()
-        .get()
-        .url("https://testserver/api/json")
-        .respond("{succeed:true}", MEDIATYPE_JSON));
+interceptor.addRule()
+        .get("https://testserver/api/json")
+        .respond("{succeed:true}", MEDIATYPE_JSON);
 
-interceptor.addRule(new Rule.Builder()
-        .get()
-        .url("https://testserver/api/json")
-        .respond(resource("sample.json"), MEDIATYPE_JSON));
+interceptor.addRule()
+        .get("https://testserver/api/json")
+        .respond(resource("sample.json"), MEDIATYPE_JSON);
 ```
 
 Then add the interceptor to your OkHttpClient client and use it as usual:

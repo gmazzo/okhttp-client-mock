@@ -35,8 +35,8 @@ public class MockInterceptor implements Interceptor {
     }
 
     /**
-     * Adds a new mock rule to this interceptor. Please make sure to a {@link Rule.Builder} and call
-     * one of the final statements {@link Rule.Builder#respond}.
+     * Adds a new mock rule to this interceptor. Use {@link Rule.Builder} to create one and
+     * call the final statements {@link Rule.Builder#respond}.
      * <p>
      * Example:
      * <pre>{@code
@@ -48,11 +48,33 @@ public class MockInterceptor implements Interceptor {
      * }</pre>
      */
     public MockInterceptor addRule(Response.Builder builder) {
-        if (!(builder instanceof Rule.Builder.RuleResponseBuilder)) {
+        if (!(builder instanceof Rule.Builder.FinalRuleBuilder)) {
             throw new IllegalArgumentException("This response was not created with Rule.Builder!");
         }
-        rules.add(((Rule.Builder.RuleResponseBuilder) builder).buildRule());
+        addRule(((Rule.Builder.FinalRuleBuilder) builder).buildRule());
         return this;
+    }
+
+    /**
+     * Adds a new mock rule to this interceptor.
+     */
+    public MockInterceptor addRule(Rule rule) {
+        rules.add(rule);
+        return this;
+    }
+
+    /**
+     * Short hand for {@link #addRule(Response.Builder builder)}
+     */
+    public Rule.Builder addRule() {
+        return new Rule.Builder() {
+
+            @Override
+            void onRespond(FinalRuleBuilder response) {
+                addRule(response);
+            }
+
+        };
     }
 
     public MockInterceptor reset() {
