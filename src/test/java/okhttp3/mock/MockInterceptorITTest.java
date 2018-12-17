@@ -4,9 +4,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import static okhttp3.mock.ClasspathResources.resource;
 import static okhttp3.mock.MediaTypes.MEDIATYPE_JSON;
@@ -136,6 +140,39 @@ public class MockInterceptorITTest {
                 .delete()
                 .build())
                 .execute();
+    }
+
+    @Test
+    public void testAnswer() throws IOException {
+        interceptor.addRule()
+                .get()
+                .pathMatches(Pattern.compile("/aPath/(\\w+)"))
+                .anyTimes()
+                .answer(new RuleAnswer() {
+
+                    @Override
+                    public Response.Builder respond(Request request) {
+                        return new Response.Builder()
+                                .code(200)
+                                .body(ResponseBody.create(null, request.url().encodedPath()));
+                    }
+
+                });
+
+        String[] paths = new String[]{"/aPath/aaa", "/aPath/bbb", "/aPath/ccc"};
+        for (String expectedBody : paths) {
+            HttpUrl url = HttpUrl.parse(TEST_URL).newBuilder().encodedPath(expectedBody).build();
+
+            String body = client.newCall(new Request.Builder()
+                    .url(url)
+                    .get()
+                    .build())
+                    .execute()
+                    .body()
+                    .string();
+
+            assertEquals(expectedBody, body);
+        }
     }
 
 }

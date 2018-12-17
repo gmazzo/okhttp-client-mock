@@ -41,13 +41,13 @@ import static okhttp3.mock.matchers.MatcherHelper.suffix;
 
 public class Rule {
     private final List<Matcher> matchers;
-    private final Response.Builder response;
+    private final RuleAnswer answer;
     private final long delay;
     private int times;
 
-    private Rule(List<Matcher> matchers, Response.Builder response, int times, long delay) {
+    private Rule(List<Matcher> matchers, RuleAnswer answer, int times, long delay) {
         this.matchers = matchers;
-        this.response = response;
+        this.answer = answer;
         this.times = times;
         this.delay = delay;
     }
@@ -71,7 +71,7 @@ public class Rule {
         if (times > 0 && times != Integer.MAX_VALUE) {
             times--;
         }
-        return response
+        return answer.respond(request)
                 .protocol(Protocol.HTTP_1_1)
                 .request(request)
                 .message("Rule response " + this)
@@ -103,7 +103,6 @@ public class Rule {
         private long delay = 0;
         private boolean negateNext;
         private boolean orNext;
-        private FinalRuleBuilder response;
 
         public Builder get() {
             method(GET);
@@ -322,17 +321,21 @@ public class Rule {
         }
 
         public Response.Builder respond(int code, @Nullable ResponseBody body) {
-            this.response = new FinalRuleBuilder();
-            this.response.code(code)
-                    .body(body != null ? body : ResponseBody.create(null, ""));
-            onRespond(this.response);
-            return this.response;
+            FinalRuleBuilder builder = new FinalRuleBuilder();
+            builder.code(code);
+            builder.body(body != null ? body : ResponseBody.create(null, ""));
+            onBuild(builder.buildRule());
+            return builder;
         }
 
-        void onRespond(FinalRuleBuilder response) {
+        public void answer(RuleAnswer answer) {
+            onBuild(new Rule(Collections.unmodifiableList(matchers), answer, times, delay));
         }
 
-        class FinalRuleBuilder extends Response.Builder {
+        void onBuild(Rule rule) {
+        }
+
+        class FinalRuleBuilder extends Response.Builder implements RuleAnswer {
 
             Rule buildRule() {
                 if (negateNext) {
@@ -347,10 +350,12 @@ public class Rule {
                 if (delay < 0) {
                     throw new IllegalStateException("Delay can't be less than 0!");
                 }
-                if (response == null) {
-                    throw new IllegalStateException("No response recorded for this rule!");
-                }
-                return new Rule(Collections.unmodifiableList(matchers), response, times, delay);
+                return new Rule(Collections.unmodifiableList(matchers), this, times, delay);
+            }
+
+            @Override
+            public Response.Builder respond(Request request) {
+                return this;
             }
 
         }

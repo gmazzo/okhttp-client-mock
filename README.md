@@ -5,7 +5,7 @@ A simple OKHttp client mock, using a programmable request interceptor
 On your `build.gradle` add:
 ```groovy
 dependencies {
-    testImplementation 'com.github.gmazzo:okhttp-mock:1.1.0'
+    testImplementation 'com.github.gmazzo:okhttp-mock:1.2.0'
 }
 ```
 [![Download](https://api.bintray.com/packages/gmazzo/maven/okhttp-client-mock/images/download.svg) ](https://bintray.com/gmazzo/maven/okhttp-client-mock/_latestVersion)
@@ -29,6 +29,13 @@ interceptor.addRule()
 interceptor.addRule()
         .get("https://testserver/api/json")
         .respond(resource("sample.json"), MEDIATYPE_JSON);
+
+interceptor.addRule()
+        .pathMatches(Pattern.compile("/aPath/(\\w+)"))
+        .anyTimes()
+        .answer(request -> new Response.Builder()
+            .code(200)
+            .body(ResponseBody.create(null, "Path was " + request.url().encodedPath())));
 ```
 
 Then add the interceptor to your OkHttpClient client and use it as usual:

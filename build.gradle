@@ -10,7 +10,7 @@ repositories {
 }
 
 group = 'com.github.gmazzo'
-version = '1.1.0'
+version = '1.2.0'
 archivesBaseName = 'okhttp-mock'
 
 sourceCompatibility = 1.7
@@ -22,8 +22,8 @@ dependencies {
     compileOnly 'com.android.support:support-annotations:25.3.1'
     compileOnly 'com.google.android:android:2.2.1'
 
-    testCompile configurations.compileOnly
-    testCompile 'junit:junit:4.12'
+    testImplementation configurations.compileOnly
+    testImplementation 'junit:junit:4.12'
 }
 
 def repoDesc = 'A simple OKHttp client mock, using a programmable request interceptor Edit'

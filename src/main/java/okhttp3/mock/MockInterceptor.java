@@ -70,8 +70,8 @@ public class MockInterceptor implements Interceptor {
         return new Rule.Builder() {
 
             @Override
-            void onRespond(FinalRuleBuilder response) {
-                addRule(response);
+            void onBuild(Rule rule) {
+                addRule(rule);
             }
 
         };
