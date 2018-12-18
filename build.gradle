@@ -10,7 +10,7 @@ repositories {
 }
 
 group = 'com.github.gmazzo'
-version = '1.2.0'
+version = '1.2.1'
 archivesBaseName = 'okhttp-mock'
 
 sourceCompatibility = 1.7

@@ -2,7 +2,6 @@ package okhttp3.mock;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -95,13 +94,12 @@ public class MockInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
-        for (Iterator<Rule> it = rules.iterator(); it.hasNext(); ) {
-            Rule rule = it.next();
-            Response response = rule.accept(request);
-
+        for (Rule rule : rules) {
             if (rule.isConsumed()) {
-                it.remove();
+                continue;
             }
+
+            Response response = rule.accept(request);
             if (response != null) {
                 return response;
 

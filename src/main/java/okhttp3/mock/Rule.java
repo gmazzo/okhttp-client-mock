@@ -94,7 +94,7 @@ public class Rule {
 
     @Override
     public String toString() {
-        return matchers.toString();
+        return matchers.toString() + ", consumed=" + isConsumed();
     }
 
     public static class Builder {
@@ -336,6 +336,9 @@ public class Rule {
         }
 
         class FinalRuleBuilder extends Response.Builder implements RuleAnswer {
+            private final boolean repeteable = times != 1;
+            private ResponseBody repeteableBody;
+            private byte repeteableBodyContent[];
 
             Rule buildRule() {
                 if (negateNext) {
@@ -354,7 +357,26 @@ public class Rule {
             }
 
             @Override
+            public Response.Builder body(ResponseBody body) {
+                if (repeteable) {
+                    repeteableBody = body;
+                    try {
+                        repeteableBodyContent = body.bytes();
+
+                    } catch (IOException e) {
+                        throw new IllegalArgumentException("error preloading body for rule " + this, e);
+                    }
+                }
+                return super.body(body);
+            }
+
+            @Override
             public Response.Builder respond(Request request) {
+                if (repeteable) {
+                    Buffer buffer = repeteableBody.source().buffer();
+                    buffer.clear();
+                    buffer.write(repeteableBodyContent);
+                }
                 return this;
             }
 
