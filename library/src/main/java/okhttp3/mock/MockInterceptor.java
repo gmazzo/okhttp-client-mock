@@ -1,15 +1,15 @@
 package okhttp3.mock;
 
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.mock.matchers.Matcher;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.mock.matchers.Matcher;
 
 /**
  * An {@link Interceptor} for {@link okhttp3.OkHttpClient}, which with match request and provide pre-configured mock responses.
@@ -45,6 +45,9 @@ public class MockInterceptor implements Interceptor {
      *      .respond(HTTP_200_OK)
      *          .header("SomeHeader", "SomeValue"));
      * }</pre>
+     *
+     * @param builder the rule to add
+     * @return this instance
      */
     public MockInterceptor addRule(Response.Builder builder) {
         if (!(builder instanceof Rule.Builder.FinalRuleBuilder)) {
@@ -56,6 +59,9 @@ public class MockInterceptor implements Interceptor {
 
     /**
      * Adds a new mock rule to this interceptor.
+     *
+     * @param rule the rule to add
+     * @return this instance
      */
     public MockInterceptor addRule(Rule rule) {
         rules.add(rule);
@@ -64,6 +70,8 @@ public class MockInterceptor implements Interceptor {
 
     /**
      * Short hand for {@link #addRule(Response.Builder builder)}
+     *
+     * @return a rule builder
      */
     public Rule.Builder addRule() {
         return new Rule.Builder() {

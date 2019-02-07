@@ -13,6 +13,10 @@ public final class AndroidResources {
 
     /**
      * Loads the content from the given asset
+     *
+     * @param context the android context
+     * @param name    the name of the asset
+     * @return the content as an {@link InputStream}
      */
     public static InputStream asset(Context context, String name) {
         try {
@@ -25,6 +29,10 @@ public final class AndroidResources {
 
     /**
      * Loads the content from the given raw resource
+     *
+     * @param context  the android context
+     * @param resource the id of the resource
+     * @return the content as an {@link InputStream}
      */
     public static InputStream rawRes(Context context, @RawRes int resource) {
         return context.getResources().openRawResource(resource);
