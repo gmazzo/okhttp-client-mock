@@ -1,6 +1,9 @@
 # okhttp-client-mock
 A simple OKHttp client mock, using a programmable request interceptor
 
+[![Build Status](https://travis-ci.com/gmazzo/okhttp-client-mock.svg?branch=master)](https://travis-ci.com/gmazzo/okhttp-client-mock)
+[![codecov](https://codecov.io/gh/gmazzo/okhttp-client-mock/branch/master/graph/badge.svg)](https://codecov.io/gh/gmazzo/okhttp-client-mock)
+
 ## Import
 On your `build.gradle` add:
 ```groovy

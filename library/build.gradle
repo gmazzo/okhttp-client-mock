@@ -23,6 +23,11 @@ def repoUrl = "https://github.com/gmazzo/$repoName"
 def repoTags = ['okhttp', 'mock', 'retrofit', 'test']
 
 jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+    
     check.dependsOn it
 }
 
