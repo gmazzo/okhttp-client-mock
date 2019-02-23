@@ -16,7 +16,7 @@ dependencies {
     testImplementation("junit:junit:4.12")
 }
 
-tasks.named<JacocoReport>("jacocoTestReport") {
+tasks.withType(JacocoReport::class.java) {
     reports {
         xml.isEnabled = true
         html.isEnabled = true
