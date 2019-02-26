@@ -1,6 +1,8 @@
 # okhttp-client-mock
 A simple OKHttp client mock, using a programmable request interceptor
 
+[![Download](https://api.bintray.com/packages/gmazzo/maven/okhttp-client-mock/images/download.svg) ](https://bintray.com/gmazzo/maven/okhttp-client-mock/_latestVersion)
+[![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-OKHttp%20client%20mock-green.svg?style=flat )](https://android-arsenal.com/details/1/6763)
 [![Build Status](https://travis-ci.com/gmazzo/okhttp-client-mock.svg?branch=master)](https://travis-ci.com/gmazzo/okhttp-client-mock)
 [![codecov](https://codecov.io/gh/gmazzo/okhttp-client-mock/branch/master/graph/badge.svg)](https://codecov.io/gh/gmazzo/okhttp-client-mock)
 
@@ -11,8 +13,6 @@ dependencies {
     testImplementation 'com.github.gmazzo:okhttp-mock:1.2.1'
 }
 ```
-[![Download](https://api.bintray.com/packages/gmazzo/maven/okhttp-client-mock/images/download.svg) ](https://bintray.com/gmazzo/maven/okhttp-client-mock/_latestVersion)
-[![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-OKHttp%20client%20mock-green.svg?style=flat )](https://android-arsenal.com/details/1/6763)
 
 ## Usage
 Create an OkHttp request interceptor and record some rules, for example:
