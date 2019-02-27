@@ -10,12 +10,38 @@ A simple OKHttp client mock, using a programmable request interceptor
 On your `build.gradle` add:
 ```groovy
 dependencies {
-    testImplementation 'com.github.gmazzo:okhttp-mock:1.2.1'
+    testImplementation 'com.github.gmazzo:okhttp-mock:1.3.0'
 }
 ```
 
 ## Usage
-Create an OkHttp request interceptor and record some rules, for example:
+Create an OkHttp request interceptor and record some rules, for instance:
+```kotlin
+val interceptor = MockInterceptor().apply {
+
+    rule(get or post or put, url eq "https://testserver/api/login") {
+        respond(HTTP_401_UNAUTHORIZED).header("WWW-Authenticate", "Basic")
+    }
+
+    rule(url eq "https://testserver/api/json") {
+        respond("{succeed:true}", MEDIATYPE_JSON)
+    }
+
+    rule(url eq "https://testserver/api/json") {
+        respond(resource("sample.json"), MEDIATYPE_JSON)
+    }
+
+    rule(path matches "/aPath/(\\w+)".toRegex(), times = anyTimes) {
+        respond {
+            response(HTTP_200_OK) {
+                body("Path was " + it.url().encodedPath())
+            }
+        }
+    }
+
+}
+```
+Or in Java:
 ```java
 MockInterceptor interceptor = new MockInterceptor();
 
