@@ -1,13 +1,14 @@
 package okhttp3.mock.matchers;
 
 import okhttp3.Request;
+import okhttp3.mock.HttpMethod;
 
 import static okhttp3.mock.matchers.MatcherHelper.reason;
 
 public class MethodMatcher implements Matcher {
     private final String method;
 
-    public MethodMatcher(String method) {
+    public MethodMatcher(@HttpMethod String method) {
         this.method = method;
     }
 

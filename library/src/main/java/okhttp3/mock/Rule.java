@@ -2,16 +2,6 @@ package okhttp3.mock;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import okhttp3.MediaType;
 import okhttp3.Protocol;
 import okhttp3.Request;
@@ -27,11 +17,23 @@ import okhttp3.mock.matchers.QueryParamMatcher;
 import okhttp3.mock.matchers.URLMatcher;
 import okio.Buffer;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import static okhttp3.mock.HttpCodes.HTTP_200_OK;
-import static okhttp3.mock.HttpMethods.DELETE;
-import static okhttp3.mock.HttpMethods.GET;
-import static okhttp3.mock.HttpMethods.POST;
-import static okhttp3.mock.HttpMethods.PUT;
+import static okhttp3.mock.HttpMethod.DELETE;
+import static okhttp3.mock.HttpMethod.GET;
+import static okhttp3.mock.HttpMethod.HEAD;
+import static okhttp3.mock.HttpMethod.OPTIONS;
+import static okhttp3.mock.HttpMethod.PATCH;
+import static okhttp3.mock.HttpMethod.POST;
+import static okhttp3.mock.HttpMethod.PUT;
 import static okhttp3.mock.MediaTypes.MEDIATYPE_RAW_DATA;
 import static okhttp3.mock.MediaTypes.MEDIATYPE_TEXT;
 import static okhttp3.mock.matchers.MatcherHelper.any;
@@ -114,6 +116,16 @@ public class Rule {
             return url(url);
         }
 
+        public Builder head() {
+            method(HEAD);
+            return this;
+        }
+
+        public Builder head(String url) {
+            head();
+            return url(url);
+        }
+
         public Builder post() {
             method(POST);
             return this;
@@ -144,7 +156,27 @@ public class Rule {
             return url(url);
         }
 
-        public Builder method(String method) {
+        public Builder options() {
+            method(OPTIONS);
+            return this;
+        }
+
+        public Builder options(String url) {
+            options();
+            return url(url);
+        }
+
+        public Builder patch() {
+            patch(PATCH);
+            return this;
+        }
+
+        public Builder patch(String url) {
+            patch();
+            return url(url);
+        }
+
+        public Builder method(@HttpMethod String method) {
             matches(new MethodMatcher(method));
             return this;
         }
@@ -312,7 +344,7 @@ public class Rule {
             }
         }
 
-        public Response.Builder respond(int code) {
+        public Response.Builder respond(@HttpCode int code) {
             return respond(code, (ResponseBody) null);
         }
 
@@ -320,7 +352,7 @@ public class Rule {
             return respond(HTTP_200_OK, body);
         }
 
-        public Response.Builder respond(int code, @Nullable ResponseBody body) {
+        public Response.Builder respond(@HttpCode int code, @Nullable ResponseBody body) {
             FinalRuleBuilder builder = new FinalRuleBuilder();
             builder.code(code);
             builder.body(body != null ? body : ResponseBody.create(null, ""));

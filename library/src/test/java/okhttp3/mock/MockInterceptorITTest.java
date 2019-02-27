@@ -1,16 +1,15 @@
 package okhttp3.mock;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.util.regex.Pattern;
-
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 import static okhttp3.mock.ClasspathResources.resource;
 import static okhttp3.mock.MediaTypes.MEDIATYPE_JSON;
@@ -139,28 +138,28 @@ public class MockInterceptorITTest {
     public void testWrongOrSyntax1() {
         interceptor.addRule()
                 .or().get()
-                .respond(HttpCodes.HTTP_409_CONFLICT);
+                .respond(HttpCode.HTTP_409_CONFLICT);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testWrongOrSyntax2() {
         interceptor.addRule()
                 .get().or().or().post()
-                .respond(HttpCodes.HTTP_409_CONFLICT);
+                .respond(HttpCode.HTTP_409_CONFLICT);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testWrongNotSyntax1() {
         interceptor.addRule()
                 .put().not()
-                .respond(HttpCodes.HTTP_409_CONFLICT);
+                .respond(HttpCode.HTTP_409_CONFLICT);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testWrongNotSyntax2() {
         interceptor.addRule()
                 .not().not().put()
-                .respond(HttpCodes.HTTP_409_CONFLICT);
+                .respond(HttpCode.HTTP_409_CONFLICT);
     }
 
     @Test(expected = AssertionError.class)

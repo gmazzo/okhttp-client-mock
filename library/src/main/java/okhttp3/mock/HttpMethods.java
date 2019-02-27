@@ -1,13 +1,8 @@
 package okhttp3.mock;
 
-public interface HttpMethods {
-
-    String GET = "GET";
-
-    String POST = "POST";
-
-    String PUT = "PUT";
-
-    String DELETE = "DELETE";
-
+/**
+ * @deprecated replaced by {@HttpMethod}, will be removed on next version
+ */
+@Deprecated
+public interface HttpMethods extends HttpMethod {
 }
