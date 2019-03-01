@@ -79,9 +79,6 @@ fun MockInterceptor.rule(vararg allOf: Matcher,
     }
 }
 
-fun response(@HttpCode code: Int, closure: Response.Builder.() -> Unit) =
-        Response.Builder().code(code).also(closure)
-
 fun Response.Builder.body(content: ByteArray, contentType: MediaType? = null) = body(ResponseBody.create(contentType, content))
 fun Response.Builder.body(content: String, contentType: MediaType? = null) = body(ResponseBody.create(contentType, content))
 fun Response.Builder.body(content: BufferedSource, contentLength: Long = -1L, contentType: MediaType? = null) = body(ResponseBody.create(contentType, contentLength, content))
@@ -95,9 +92,13 @@ private val dummyResponse = object : Response.Builder() {
 
 }
 
+fun Rule.Builder.respond(@HttpCode code: Int = HttpCode.HTTP_200_OK,
+                         answer: Response.Builder.(Request) -> Response.Builder) =
+        respond(RuleAnswer {
+            answer(Response.Builder().code(code), it)
+        })
+
 fun Rule.Builder.respond(answer: RuleAnswer): Response.Builder {
     answer(answer)
     return dummyResponse
 }
-
-fun Rule.Builder.respond(answer: (Request) -> Response.Builder) = respond(RuleAnswer(answer))

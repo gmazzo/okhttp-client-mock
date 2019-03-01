@@ -3,7 +3,6 @@ plugins {
     id("jacoco")
     id("maven-publish")
     id("org.jetbrains.kotlin.jvm") version "1.3.21"
-    id("com.jfrog.bintray") version "1.8.4"
 }
 
 base.archivesBaseName = "okhttp-mock"
@@ -46,12 +45,11 @@ val javadocJar by tasks.creating(Jar::class) {
     from(sourceSets["main"].allSource)
 }
 
-val repoDesc = "A simple OKHttp client mock, using a programmable request interceptor Edit"
-val repoName = "okhttp-client-mock"
-val repoUrl = "https://github.com/gmazzo/$repoName"
-val repoTags = arrayOf("okhttp", "mock", "retrofit", "test")
-
 publishing {
+    val bintrayPackage = "okhttp-client-mock"
+    val bintrayUser = System.getenv("BINTRAY_USER")
+    val bintrayKey = System.getenv("BINTRAY_KEY")
+
     publications {
         create<MavenPublication>("default") {
             artifactId = base.archivesBaseName
@@ -60,22 +58,18 @@ publishing {
             artifact(javadocJar)
         }
     }
-}
-
-bintray {
-    user = System.getenv("BINTRAY_USER")
-    key = System.getenv("BINTRAY_KEY")
-    pkg = PackageConfig().apply {
-        repo = "maven"
-        name = repoName
-        desc = repoDesc
-        vcsUrl = "${repoUrl}.git"
-        githubRepo = repoUrl.replace("https://github.com/", "")
-        githubReleaseNotesFile = "README.md"
-        publicDownloadNumbers = true
-        setLicenses("MIT")
-        setLabels(*repoTags)
+    repositories {
+        maven {
+            name = "local"
+            url = file("${rootProject.buildDir}/repo").toURI()
+        }
+        maven {
+            name = "bintray"
+            url = uri("https://api.bintray.com/content/$bintrayUser/maven/$bintrayPackage/$version")
+            credentials {
+                username = bintrayUser
+                password = bintrayKey
+            }
+        }
     }
-
-    setPublications("default")
 }

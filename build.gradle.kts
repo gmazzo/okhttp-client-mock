@@ -5,7 +5,7 @@ allprojects {
     }
 
     group = "com.github.gmazzo"
-    version = "1.3.0"
+    version = "1.3.1"
 }
 
 task<Delete>("clean") {

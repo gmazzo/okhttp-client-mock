@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 import static okhttp3.mock.ClasspathResources.resource;
+import static okhttp3.mock.HttpCode.HTTP_200_OK;
+import static okhttp3.mock.HttpCode.HTTP_401_UNAUTHORIZED;
 import static okhttp3.mock.MediaTypes.MEDIATYPE_JSON;
 import static org.junit.Assert.assertEquals;
 
@@ -82,7 +84,7 @@ public class MockInterceptorITTest {
                 .get()
                 .urlStarts("http://")
                 .respond(TEST_RESPONSE)
-                .code(401);
+                .code(HTTP_401_UNAUTHORIZED);
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
@@ -187,7 +189,7 @@ public class MockInterceptorITTest {
                     @Override
                     public Response.Builder respond(Request request) {
                         return new Response.Builder()
-                                .code(200)
+                                .code(HTTP_200_OK)
                                 .body(ResponseBody.create(null, request.url().encodedPath()));
                     }
 

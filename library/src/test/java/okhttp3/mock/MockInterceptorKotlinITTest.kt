@@ -128,7 +128,7 @@ class MockInterceptorKotlinITTest {
     @Test
     fun testAnswer() {
         interceptor.rule(get, path matches "/aPath/(\\w+)".toRegex(), times = anyTimes) {
-            respond { response(200) { body(it.url().encodedPath()) } }
+            respond(200) { body(it.url().encodedPath()) }
         }
 
         val paths = arrayOf("/aPath/aaa", "/aPath/bbb", "/aPath/ccc")

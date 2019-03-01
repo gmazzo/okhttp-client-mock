@@ -10,7 +10,7 @@ A simple OKHttp client mock, using a programmable request interceptor
 On your `build.gradle` add:
 ```groovy
 dependencies {
-    testImplementation 'com.github.gmazzo:okhttp-mock:1.3.0'
+    testImplementation 'com.github.gmazzo:okhttp-mock:<version>'
 }
 ```
 
@@ -32,10 +32,16 @@ val interceptor = MockInterceptor().apply {
     }
 
     rule(path matches "/aPath/(\\w+)".toRegex(), times = anyTimes) {
-        respond {
-            response(HTTP_200_OK) {
-                body("Path was " + it.url().encodedPath())
-            }
+        respond { body("Path was " + it.url().encodedPath()) }
+    }
+
+    rule(path matches "/aPath/(\\w+)".toRegex(), times = anyTimes) {
+        respond { body("Path was " + it.url().encodedPath()) }
+    }
+
+    rule(delete) {
+        respond(code = HTTP_405_METHOD_NOT_ALLOWED) {
+            body("{succeed:false}", MEDIATYPE_JSON)
         }
     }
 
