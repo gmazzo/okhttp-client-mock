@@ -35,10 +35,6 @@ val interceptor = MockInterceptor().apply {
         respond { body("Path was " + it.url().encodedPath()) }
     }
 
-    rule(path matches "/aPath/(\\w+)".toRegex(), times = anyTimes) {
-        respond { body("Path was " + it.url().encodedPath()) }
-    }
-
     rule(delete) {
         respond(code = HTTP_405_METHOD_NOT_ALLOWED) {
             body("{succeed:false}", MEDIATYPE_JSON)
