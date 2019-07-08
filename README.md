@@ -76,7 +76,7 @@ OkHttpClient client = new OkHttpClient.Builder()
                 .build();
 ```
 
-Check an example [Integration Test](src/test/java/okhttp3/mock/MockInterceptorITTest.java) with mocked HTTP responses
+Check an example [Integration Test](/library/src/test/java/okhttp3/mock/MockInterceptorITTest.java) with mocked HTTP responses
 
 You can use the following helper classes to provide mock responses from resources:
 - `ClasspathResources.resource` to load content from classpath
