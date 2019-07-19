@@ -167,7 +167,7 @@ public class Rule {
         }
 
         public Builder patch() {
-            patch(PATCH);
+            method(PATCH);
             return this;
         }
 

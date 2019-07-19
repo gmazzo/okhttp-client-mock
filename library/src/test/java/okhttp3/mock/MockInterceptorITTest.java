@@ -1,10 +1,12 @@
 package okhttp3.mock;
 
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okhttp3.RequestBody;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -211,4 +213,17 @@ public class MockInterceptorITTest {
         }
     }
 
+    @Test
+    public void testPatch() throws IOException {
+        final RequestBody body = RequestBody.create(MediaType.parse("application/json"), "{}");
+        interceptor.addRule()
+            .patch(TEST_URL)
+            .respond(TEST_RESPONSE);
+
+        client.newCall(new Request.Builder()
+            .url(TEST_URL)
+            .patch(body)
+            .build())
+            .execute();
+    }
 }
