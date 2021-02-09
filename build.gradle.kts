@@ -1,11 +1,12 @@
 allprojects {
+
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     group = "com.github.gmazzo"
-    version = "1.3.2"
+    version = "1.4.0"
 }
 
 task<Delete>("clean") {

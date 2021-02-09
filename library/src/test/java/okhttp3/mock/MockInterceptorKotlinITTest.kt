@@ -1,9 +1,11 @@
 package okhttp3.mock
 
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.mock.ClasspathResources.resource
 import okhttp3.mock.MediaTypes.MEDIATYPE_JSON
 import org.junit.Assert.assertEquals
@@ -13,19 +15,21 @@ class MockInterceptorKotlinITTest {
     private val interceptor by lazy { MockInterceptor(Behavior.UNORDERED) }
     private val client by lazy {
         OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .build()
+            .addInterceptor(interceptor)
+            .build()
     }
 
     @Test
     fun testGet() {
         interceptor.rule(get, url eq TEST_URL) { respond(TEST_RESPONSE) }
 
-        client.newCall(Request.Builder()
+        client.newCall(
+            Request.Builder()
                 .url(TEST_URL)
                 .get()
-                .build())
-                .execute()
+                .build()
+        )
+            .execute()
     }
 
     @Test
@@ -35,7 +39,7 @@ class MockInterceptorKotlinITTest {
         var first: String? = null
         for (i in 0..9) {
             val actual = client.newCall(Request.Builder().url(TEST_URL).get().build())
-                    .execute().body()!!.string()
+                .execute().body!!.string()
 
             if (first == null) {
                 first = actual
@@ -50,11 +54,13 @@ class MockInterceptorKotlinITTest {
     fun testURLStartsWith() {
         interceptor.rule(get, url startWith "https://") { respond(TEST_RESPONSE) }
 
-        client.newCall(Request.Builder()
+        client.newCall(
+            Request.Builder()
                 .url(TEST_URL)
                 .get()
-                .build())
-                .execute()
+                .build()
+        )
+            .execute()
     }
 
     @Test(expected = AssertionError::class)
@@ -63,22 +69,26 @@ class MockInterceptorKotlinITTest {
             respond(TEST_RESPONSE).code(HttpCode.HTTP_401_UNAUTHORIZED)
         }
 
-        client.newCall(Request.Builder()
+        client.newCall(
+            Request.Builder()
                 .url(TEST_URL)
                 .get()
-                .build())
-                .execute()
+                .build()
+        )
+            .execute()
     }
 
     @Test
     fun testResourceResponse() {
         interceptor.rule { respond(resource("sample.json")) }
 
-        client.newCall(Request.Builder()
+        client.newCall(
+            Request.Builder()
                 .url(TEST_URL)
                 .get()
-                .build())
-                .execute()
+                .build()
+        )
+            .execute()
     }
 
     @Test
@@ -86,62 +96,70 @@ class MockInterceptorKotlinITTest {
         val json = "{\"succeed\":true}"
 
         interceptor.behavior(Behavior.SEQUENTIAL)
-                .rule(get or post or put) {
-                    respond(json, MEDIATYPE_JSON)
-                }
+            .rule(get or post or put) {
+                respond(json, MEDIATYPE_JSON)
+            }
 
-        assertEquals(json, client.newCall(Request.Builder()
-                .url(TEST_URL)
-                .get()
-                .build())
+        assertEquals(
+            json, client.newCall(
+                Request.Builder()
+                    .url(TEST_URL)
+                    .get()
+                    .build()
+            )
                 .execute()
-                .body()!!
-                .string())
+                .body!!
+                .string()
+        )
     }
 
     @Test
     fun testCustomizeResponse() {
-        val body = ResponseBody.create(MediaTypes.MEDIATYPE_XML, "<html/>")
+        val body = "<html/>".toResponseBody(MediaTypes.MEDIATYPE_XML)
 
         interceptor.rule { respond(TEST_RESPONSE).body(body).addHeader("Test", "aValue") }
 
-        val response = client!!.newCall(Request.Builder().url(TEST_URL).get().build()).execute()
+        val response = client.newCall(Request.Builder().url(TEST_URL).get().build()).execute()
 
-        assertEquals(MediaTypes.MEDIATYPE_XML.type(), response.body()!!.contentType()!!.type())
-        assertEquals(MediaTypes.MEDIATYPE_XML.subtype(), response.body()!!.contentType()!!.subtype())
+        assertEquals(MediaTypes.MEDIATYPE_XML.type, response.body!!.contentType()!!.type)
+        assertEquals(MediaTypes.MEDIATYPE_XML.subtype, response.body!!.contentType()!!.subtype)
         assertEquals("aValue", response.header("Test"))
-        assertEquals("<html/>", response.body()!!.string())
+        assertEquals("<html/>", response.body!!.string())
     }
 
     @Test(expected = AssertionError::class)
     fun testFailReasonSequential() {
         interceptor.behavior(Behavior.SEQUENTIAL)
-                .rule(get or post or put) { respond("OK") }
+            .rule(get or post or put) { respond("OK") }
 
-        client.newCall(Request.Builder()
+        client.newCall(
+            Request.Builder()
                 .url(TEST_URL)
                 .delete()
-                .build())
-                .execute()
+                .build()
+        )
+            .execute()
     }
 
     @Test
     fun testAnswer() {
         interceptor.rule(get, path matches "/aPath/(\\w+)".toRegex(), times = anyTimes) {
-            respond(200) { body(it.url().encodedPath()) }
+            respond(200) { body(it.url.encodedPath) }
         }
 
         val paths = arrayOf("/aPath/aaa", "/aPath/bbb", "/aPath/ccc")
         for (expectedBody in paths) {
-            val url = HttpUrl.parse(TEST_URL)!!.newBuilder().encodedPath(expectedBody).build()
+            val url = TEST_URL.toHttpUrlOrNull()!!.newBuilder().encodedPath(expectedBody).build()
 
-            val body = client!!.newCall(Request.Builder()
+            val body = client!!.newCall(
+                Request.Builder()
                     .url(url)
                     .get()
-                    .build())
-                    .execute()
-                    .body()!!
-                    .string()
+                    .build()
+            )
+                .execute()
+                .body!!
+                .string()
 
             assertEquals(expectedBody, body)
         }

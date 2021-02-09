@@ -1,11 +1,12 @@
-@file:Suppress("ClassName")
+@file:Suppress("ClassName", "unused")
 
 package okhttp3.mock
 
 import okhttp3.MediaType
 import okhttp3.Request
 import okhttp3.Response
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.asResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.mock.matchers.HeaderMatcher
 import okhttp3.mock.matchers.Matcher
 import okhttp3.mock.matchers.MatcherHelper.any
@@ -36,7 +37,7 @@ val delete = method(HttpMethod.DELETE)
 val options = method(HttpMethod.OPTIONS)
 val patch = method(HttpMethod.PATCH)
 val any: Pattern = any()
-val anyTimes = Integer.MAX_VALUE
+const val anyTimes = Integer.MAX_VALUE
 
 fun method(@HttpMethod method: String) = MethodMatcher(method)
 fun url(value: String) = url eq value
@@ -67,10 +68,12 @@ infix fun param.eq(value: String) = matches(exact(value))
 infix fun param.matches(pattern: Pattern) = QueryParamMatcher(name, pattern)
 infix fun param.matches(regex: Regex) = matches(regex.toPattern())
 
-fun MockInterceptor.rule(vararg allOf: Matcher,
-                         times: Int? = null,
-                         delay: Long? = null,
-                         closure: Rule.Builder.() -> Response.Builder) {
+fun MockInterceptor.rule(
+    vararg allOf: Matcher,
+    times: Int? = null,
+    delay: Long? = null,
+    closure: Rule.Builder.() -> Response.Builder
+) {
     addRule().apply {
         allOf.forEach { matches(it) }
         times?.let(::times)
@@ -79,10 +82,17 @@ fun MockInterceptor.rule(vararg allOf: Matcher,
     }
 }
 
-fun Response.Builder.body(content: ByteArray, contentType: MediaType? = null) = body(ResponseBody.create(contentType, content))
-fun Response.Builder.body(content: String, contentType: MediaType? = null) = body(ResponseBody.create(contentType, content))
-fun Response.Builder.body(content: BufferedSource, contentLength: Long = -1L, contentType: MediaType? = null) = body(ResponseBody.create(contentType, contentLength, content))
-fun Response.Builder.body(content: InputStream, contentLength: Long = -1L, contentType: MediaType? = null) = body(Buffer().readFrom(content), contentLength, contentType)
+fun Response.Builder.body(content: ByteArray, contentType: MediaType? = null) =
+    body(content.toResponseBody(contentType))
+
+fun Response.Builder.body(content: String, contentType: MediaType? = null) =
+    body(content.toResponseBody(contentType))
+
+fun Response.Builder.body(content: BufferedSource, contentLength: Long = -1L, contentType: MediaType? = null) =
+    body(content.asResponseBody(contentType, contentLength))
+
+fun Response.Builder.body(content: InputStream, contentLength: Long = -1L, contentType: MediaType? = null) =
+    body(Buffer().readFrom(content), contentLength, contentType)
 
 private val dummyResponse = object : Response.Builder() {
 
@@ -92,11 +102,11 @@ private val dummyResponse = object : Response.Builder() {
 
 }
 
-fun Rule.Builder.respond(@HttpCode code: Int = HttpCode.HTTP_200_OK,
-                         answer: Response.Builder.(Request) -> Response.Builder) =
-        respond(RuleAnswer {
-            answer(Response.Builder().code(code), it)
-        })
+fun Rule.Builder.respond(
+    @HttpCode code: Int = HttpCode.HTTP_200_OK,
+    answer: Response.Builder.(Request) -> Response.Builder
+): Response.Builder =
+    respond (RuleAnswer{ answer(Response.Builder().code(code), it) })
 
 fun Rule.Builder.respond(answer: RuleAnswer): Response.Builder {
     answer(answer)

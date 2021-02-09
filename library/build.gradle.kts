@@ -2,26 +2,26 @@ plugins {
     id("java")
     id("jacoco")
     id("maven-publish")
-    id("org.jetbrains.kotlin.jvm") version "1.3.21"
+    kotlin("jvm") version embeddedKotlinVersion
 }
 
 base.archivesBaseName = "okhttp-mock"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
-}
-
 dependencies {
-    compileOnly("com.squareup.okhttp3:okhttp:3.8.1")
-    compileOnly("org.robolectric:robolectric:3.4.2")
-    compileOnly("com.android.support:support-annotations:25.3.1")
-    compileOnly("com.google.android:android:2.2.1")
+
+    fun compileOnlyAndTests(notation: String) {
+        compileOnly(notation)
+        testImplementation(notation)
+    }
+
+    compileOnlyAndTests("com.squareup.okhttp3:okhttp:4.9.1")
+    compileOnlyAndTests("org.robolectric:robolectric:4.5.1")
+    compileOnlyAndTests("com.android.support:support-annotations:25.3.1")
+    compileOnlyAndTests("com.google.android:android:2.2.1")
 
     implementation(kotlin("stdlib"))
 
-    testImplementation(configurations.compileOnly)
-    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.13.1")
 }
 
 tasks.withType(JacocoReport::class.java) {
