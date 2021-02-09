@@ -1,11 +1,11 @@
 plugins {
-    id("java")
-    id("jacoco")
-    id("maven-publish")
     kotlin("jvm") version embeddedKotlinVersion
+    id("jacoco")
+    id("signing")
+    id("maven-publish")
+    id("org.ajoberstar.grgit") version "4.1.0"
+    id("name.remal.maven-publish-nexus-staging") version "1.1.6"
 }
-
-base.archivesBaseName = "okhttp-mock"
 
 dependencies {
 
@@ -33,43 +33,65 @@ tasks.withType(JacocoReport::class.java) {
     tasks["check"].dependsOn(this)
 }
 
-val sourcesJar by tasks.creating(Jar::class) {
-    dependsOn(JavaPlugin.CLASSES_TASK_NAME)
-    classifier = "sources"
-    from(sourceSets["main"].allSource)
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
-val javadocJar by tasks.creating(Jar::class) {
-    dependsOn(JavaPlugin.JAVADOC_TASK_NAME)
-    classifier = "javadoc"
-    from(sourceSets["main"].allSource)
+signing {
+    useGpgCmd()
+
+    sign(publishing.publications)
 }
 
 publishing {
-    val bintrayPackage = "okhttp-client-mock"
-    val bintrayUser = System.getenv("BINTRAY_USER")
-    val bintrayKey = System.getenv("BINTRAY_KEY")
 
-    publications {
-        create<MavenPublication>("default") {
-            artifactId = base.archivesBaseName
-            from(components["java"])
-            artifact(sourcesJar)
-            artifact(javadocJar)
+    publications.create<MavenPublication>("maven") {
+        from(components["java"])
+        pom {
+            val origin = grgit.remote.list().firstOrNull()?.url
+
+            artifactId = "okhttp-mock"
+            name.set("okhttp-client-mock")
+            description.set("A simple OKHttp client mock, using a programmable request interceptor")
+            url.set(origin)
+
+            licenses {
+                license {
+                    name.set( "MIT License")
+                    url.set("https://opensource.org/licenses/MIT")
+                }
+            }
+
+            developers {
+                developer {
+                    id.set("gmazzo")
+                    name.set("Guillermo Mazzola")
+                    email.set("gmazzo65@gmail.com")
+                }
+            }
+
+            scm {
+                connection.set(origin)
+                developerConnection.set(origin)
+                url.set(origin)
+            }
+
         }
     }
+
     repositories {
-        maven {
-            name = "local"
-            url = file("${rootProject.buildDir}/repo").toURI()
-        }
-        maven {
-            name = "bintray"
-            url = uri("https://api.bintray.com/content/$bintrayUser/maven/$bintrayPackage/$version")
+        maven(file("${rootProject.buildDir}/repo")) { name = "Local" }
+        maven(url = "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
             credentials {
-                username = bintrayUser
-                password = bintrayKey
+                username = findProperty("ossrhUsername")?.toString()
+                password = findProperty("ossrhPassword")?.toString()
             }
         }
     }
+
+}
+
+tasks.named("publish") {
+    finalizedBy("releaseNexusRepositories")
 }
