@@ -92,11 +92,15 @@ publishing {
     }
 
     repositories {
+        fun property(name: String) = sequenceOf(project::findProperty, System::getenv)
+            .mapNotNull { it(name)?.toString() }
+            .firstOrNull()
+
         maven(file("${rootProject.buildDir}/repo")) { name = "Local" }
         maven(url = "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
             credentials {
-                username = findProperty("ossrhUsername")?.toString()
-                password = findProperty("ossrhPassword")?.toString()
+                username = property("ossrhUsername")
+                password = property("ossrhPassword")
             }
         }
     }
