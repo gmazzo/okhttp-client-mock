@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm") version embeddedKotlinVersion
     id("jacoco")
@@ -24,7 +26,7 @@ dependencies {
     testImplementation("junit:junit:4.13.1")
 }
 
-tasks.withType(JacocoReport::class.java) {
+tasks.withType<JacocoReport> {
     reports {
         xml.isEnabled = true
         html.isEnabled = true
@@ -34,8 +36,17 @@ tasks.withType(JacocoReport::class.java) {
 }
 
 java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = sourceCompatibility
+
     withJavadocJar()
     withSourcesJar()
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = java.sourceCompatibility.toString()
+    }
 }
 
 signing {
@@ -58,7 +69,7 @@ publishing {
 
             licenses {
                 license {
-                    name.set( "MIT License")
+                    name.set("MIT License")
                     url.set("https://opensource.org/licenses/MIT")
                 }
             }
