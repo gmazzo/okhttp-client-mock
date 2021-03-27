@@ -10,6 +10,7 @@ import okhttp3.mock.ClasspathResources.resource
 import okhttp3.mock.MediaTypes.MEDIATYPE_JSON
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.lang.IllegalStateException
 
 class MockInterceptorKotlinITTest {
     private val interceptor by lazy { MockInterceptor(Behavior.UNORDERED) }
@@ -163,6 +164,21 @@ class MockInterceptorKotlinITTest {
 
             assertEquals(expectedBody, body)
         }
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun testThrowingException() {
+        interceptor.rule(get) {
+            respond { throw IllegalStateException() }
+        }
+
+        client.newCall(
+            Request.Builder()
+                .url(TEST_URL)
+                .get()
+                .build()
+        )
+            .execute()
     }
 
     companion object {

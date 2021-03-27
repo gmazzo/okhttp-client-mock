@@ -40,6 +40,11 @@ val interceptor = MockInterceptor().apply {
         }
     }
 
+    // throw an exception
+    rule(get) {
+        respond { throw IllegalStateException("an IO error") }
+    }
+
 }
 ```
 Or in Java:
