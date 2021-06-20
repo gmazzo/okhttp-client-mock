@@ -14,6 +14,7 @@ import okhttp3.mock.matchers.NotMatcher;
 import okhttp3.mock.matchers.OrMatcher;
 import okhttp3.mock.matchers.PathMatcher;
 import okhttp3.mock.matchers.QueryParamMatcher;
+import okhttp3.mock.matchers.RequestBodyMatcher;
 import okhttp3.mock.matchers.URLMatcher;
 import okio.Buffer;
 
@@ -248,6 +249,16 @@ public class Rule {
 
         public Builder param(String param, String value) {
             paramMatches(param, exact(value));
+            return this;
+        }
+
+        public Builder requestBody(String value) {
+            requestBodyMatches(exact(value));
+            return this;
+        }
+
+        public Builder requestBodyMatches(Pattern pattern) {
+            matches(new RequestBodyMatcher(pattern));
             return this;
         }
 

@@ -5,6 +5,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.ResponseBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.mock.ClasspathResources.resource
 import okhttp3.mock.MediaTypes.MEDIATYPE_JSON
@@ -126,6 +127,19 @@ class MockInterceptorKotlinITTest {
         assertEquals(MediaTypes.MEDIATYPE_XML.subtype, response.body!!.contentType()!!.subtype)
         assertEquals("aValue", response.header("Test"))
         assertEquals("<html/>", response.body!!.string())
+    }
+
+    @Test
+    fun testRequestBody() {
+        val body = """{ "id": 1, "name": "name here" }"""
+        val reqBody = body.toRequestBody(MEDIATYPE_JSON)
+
+        interceptor.rule(post, url eq TEST_URL, requestBody eq body, times = anyTimes) { respond(TEST_RESPONSE) }
+
+        val response = client.newCall(Request.Builder().url(TEST_URL).post(reqBody).build()).execute()
+
+        assertEquals(TEST_RESPONSE, response.body!!.string())
+
     }
 
     @Test(expected = AssertionError::class)

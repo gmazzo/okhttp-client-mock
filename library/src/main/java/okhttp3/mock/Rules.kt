@@ -18,6 +18,7 @@ import okhttp3.mock.matchers.NotMatcher
 import okhttp3.mock.matchers.OrMatcher
 import okhttp3.mock.matchers.PathMatcher
 import okhttp3.mock.matchers.QueryParamMatcher
+import okhttp3.mock.matchers.RequestBodyMatcher
 import okhttp3.mock.matchers.URLMatcher
 import okio.Buffer
 import okio.BufferedSource
@@ -26,6 +27,7 @@ import java.util.regex.Pattern
 
 object url
 object path
+object requestBody
 data class param(val name: String)
 data class header(val name: String)
 
@@ -42,6 +44,7 @@ const val anyTimes = Integer.MAX_VALUE
 fun method(@HttpMethod method: String) = MethodMatcher(method)
 fun url(value: String) = url eq value
 fun path(value: String) = path eq value
+fun requestBody(value: String) = requestBody eq value
 fun not(matcher: Matcher) = NotMatcher(matcher)
 fun has(param: param) = param(param.name) matches any
 fun has(header: header) = header(header.name) matches any
@@ -59,6 +62,10 @@ infix fun path.startWith(path: String) = matches(prefix(path))
 infix fun path.endsWith(path: String) = matches(suffix(path))
 infix fun path.matches(pattern: Pattern) = PathMatcher(pattern)
 infix fun path.matches(regex: Regex) = matches(regex.toPattern())
+
+infix fun requestBody.eq(body: String) = matches(exact(body))
+infix fun requestBody.matches(pattern: Pattern) = RequestBodyMatcher(pattern)
+infix fun requestBody.matches(regex: Regex) = matches(regex.toPattern())
 
 infix fun header.eq(value: String) = matches(exact(value))
 infix fun header.matches(pattern: Pattern) = HeaderMatcher(name, pattern)

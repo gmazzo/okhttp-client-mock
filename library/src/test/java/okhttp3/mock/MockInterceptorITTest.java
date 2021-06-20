@@ -95,6 +95,40 @@ public class MockInterceptorITTest {
                 .execute();
     }
 
+
+    @Test
+    public void testRequestBody() throws IOException {
+        String requestBody = "{ \"id\":1, \"bio\":\"bio here\" }";
+
+        interceptor.addRule()
+                .post(TEST_URL)
+                .requestBody(requestBody)
+                .respond(TEST_RESPONSE);
+
+        Response response = client.newCall(new Request.Builder()
+                .url(TEST_URL)
+                .post(RequestBody.create(requestBody, MEDIATYPE_JSON))
+                .build())
+                .execute();
+
+        assertEquals(TEST_RESPONSE, response.body().string());
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testRequestBody_Fail() throws IOException {
+        String requestBody = "{ \"id\":1, \"bio\":\"bio here\" }";
+        interceptor.addRule()
+                .post(TEST_URL)
+                .requestBody("")
+                .respond(TEST_RESPONSE);
+
+        client.newCall(new Request.Builder()
+                .url(TEST_URL)
+                .post(RequestBody.create(requestBody, MEDIATYPE_JSON))
+                .build())
+                .execute();
+    }
+
     @Test
     public void testResourceResponse() throws IOException {
         interceptor.addRule()
@@ -137,6 +171,7 @@ public class MockInterceptorITTest {
         assertEquals("aValue", response.header("Test"));
         assertEquals("<html/>", response.body().string());
     }
+
 
     @Test(expected = IllegalStateException.class)
     public void testWrongOrSyntax1() {
