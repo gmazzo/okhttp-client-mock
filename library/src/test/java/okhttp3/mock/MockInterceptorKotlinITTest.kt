@@ -142,6 +142,17 @@ class MockInterceptorKotlinITTest {
 
     }
 
+
+    @Test(expected = AssertionError::class)
+    fun testRequestBody_Fail() {
+        val body = """{ "id": 1, "name": "name here" }"""
+        val reqBody = body.toRequestBody(MEDIATYPE_JSON)
+
+        interceptor.rule(post, url eq TEST_URL, requestBody eq "", times = anyTimes) { respond(TEST_RESPONSE) }
+
+        client.newCall(Request.Builder().url(TEST_URL).post(reqBody).build()).execute()
+    }
+
     @Test(expected = AssertionError::class)
     fun testFailReasonSequential() {
         interceptor.behavior(Behavior.SEQUENTIAL)
