@@ -47,14 +47,12 @@ public class Rule {
     private final RuleAnswer answer;
     private final long delay;
     private int times;
-    private RequestCache requestCache;
 
-    private Rule(List<Matcher> matchers, RuleAnswer answer, int times, long delay, RequestCache requestCache) {
+    private Rule(List<Matcher> matchers, RuleAnswer answer, int times, long delay) {
         this.matchers = matchers;
         this.answer = answer;
         this.times = times;
         this.delay = delay;
-        this.requestCache = requestCache;
     }
 
     protected Response accept(Request request) {
@@ -380,7 +378,7 @@ public class Rule {
         }
 
         public void answer(RuleAnswer answer) {
-            onBuild(new Rule(Collections.unmodifiableList(matchers), answer, times, delay, requestCache));
+            onBuild(new Rule(Collections.unmodifiableList(matchers), answer, times, delay));
         }
 
         void onBuild(Rule rule) {
@@ -404,7 +402,7 @@ public class Rule {
                 if (delay < 0) {
                     throw new IllegalStateException("Delay can't be less than 0!");
                 }
-                return new Rule(Collections.unmodifiableList(matchers), this, times, delay, requestCache);
+                return new Rule(Collections.unmodifiableList(matchers), this, times, delay);
             }
 
             @Override
