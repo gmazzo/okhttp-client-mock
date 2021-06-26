@@ -107,11 +107,6 @@ public class Rule {
         private long delay = 0;
         private boolean negateNext;
         private boolean orNext;
-        private RequestCache requestCache;
-
-        protected void setRequestCache(RequestCache request) {
-            this.requestCache = request;
-        }
 
         public Builder get() {
             method(GET);
