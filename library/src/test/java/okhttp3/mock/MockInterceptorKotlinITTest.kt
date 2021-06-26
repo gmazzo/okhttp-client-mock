@@ -1,10 +1,8 @@
 package okhttp3.mock
 
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.ResponseBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.mock.ClasspathResources.resource
@@ -131,14 +129,20 @@ class MockInterceptorKotlinITTest {
 
     @Test
     fun testRequestBody() {
-        val body = """{ "id": 1, "name": "name here" }"""
-        val reqBody = body.toRequestBody(MEDIATYPE_JSON)
+        val request1 = """{ "id": 1, "name": "name here" }"""
+        val request2 = """{ "id" : 1 }"""
 
-        interceptor.rule(post, url eq TEST_URL, requestBody eq body, times = anyTimes) { respond(TEST_RESPONSE) }
+        val expectedResponse1 = TEST_RESPONSE
+        val expectedResponse2 = request1
 
-        val response = client.newCall(Request.Builder().url(TEST_URL).post(reqBody).build()).execute()
+        interceptor.rule(post, url eq TEST_URL, requestBody eq request1, times = anyTimes) { respond(expectedResponse1.toResponseBody(MEDIATYPE_JSON)) }
+        interceptor.rule(delete, url eq TEST_URL, requestBody eq request2, times = anyTimes) { respond(expectedResponse2.toResponseBody(MEDIATYPE_JSON)) }
 
-        assertEquals(TEST_RESPONSE, response.body!!.string())
+        val response1 = client.newCall(Request.Builder().url(TEST_URL).post(request1.toRequestBody(MEDIATYPE_JSON)).build()).execute()
+        assertEquals(expectedResponse1, response1.body!!.string())
+
+        val response2 = client.newCall(Request.Builder().url(TEST_URL).delete(request2.toRequestBody(MEDIATYPE_JSON)).build()).execute()
+        assertEquals(expectedResponse2, response2.body!!.string())
 
     }
 

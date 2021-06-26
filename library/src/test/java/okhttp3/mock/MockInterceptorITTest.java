@@ -98,21 +98,39 @@ public class MockInterceptorITTest {
 
     @Test
     public void testRequestBody() throws IOException {
-        String requestBody = "{ \"id\":1, \"bio\":\"bio here\" }";
+        String request1 = "{ \"id\":1, \"bio\":\"bio here\" }";
+        String request2 = "{ \"id\":1 }";
+
+        String expectedResponse1 = TEST_RESPONSE;
+        String expectedResponse2 = request1;
 
         interceptor.addRule()
                 .post(TEST_URL)
-                .requestBody(requestBody)
-                .respond(TEST_RESPONSE);
+                .requestBody(request1)
+                .respond(expectedResponse1);
 
-        Response response = client.newCall(new Request.Builder()
+        interceptor.addRule()
+                .delete(TEST_URL)
+                .requestBody(request2)
+                .respond(ResponseBody.create(expectedResponse2, MEDIATYPE_JSON));
+
+        Response response1 = client.newCall(new Request.Builder()
                 .url(TEST_URL)
-                .post(RequestBody.create(requestBody, MEDIATYPE_JSON))
+                .post(RequestBody.create(request1, MEDIATYPE_JSON))
                 .build())
                 .execute();
 
-        assertEquals(TEST_RESPONSE, response.body().string());
+        assertEquals(expectedResponse1, response1.body().string());
+
+        Response response2 = client.newCall(new Request.Builder()
+                .url(TEST_URL)
+                .delete(RequestBody.create(request2, MEDIATYPE_JSON))
+                .build())
+                .execute();
+
+        assertEquals(expectedResponse2, response2.body().string());
     }
+
 
     @Test(expected = AssertionError.class)
     public void testRequestBody_Fail() throws IOException {

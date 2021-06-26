@@ -14,7 +14,7 @@ import okhttp3.mock.matchers.NotMatcher;
 import okhttp3.mock.matchers.OrMatcher;
 import okhttp3.mock.matchers.PathMatcher;
 import okhttp3.mock.matchers.QueryParamMatcher;
-import okhttp3.mock.matchers.RequestBodyMatcher;
+import okhttp3.mock.matchers.BodyMatcher;
 import okhttp3.mock.matchers.URLMatcher;
 import okio.Buffer;
 
@@ -47,12 +47,14 @@ public class Rule {
     private final RuleAnswer answer;
     private final long delay;
     private int times;
+    private RequestCache requestCache;
 
-    private Rule(List<Matcher> matchers, RuleAnswer answer, int times, long delay) {
+    private Rule(List<Matcher> matchers, RuleAnswer answer, int times, long delay, RequestCache requestCache) {
         this.matchers = matchers;
         this.answer = answer;
         this.times = times;
         this.delay = delay;
+        this.requestCache = requestCache;
     }
 
     protected Response accept(Request request) {
@@ -60,6 +62,7 @@ public class Rule {
             return null;
         }
         for (Matcher matcher : matchers) {
+
             if (!matcher.matches(request)) {
                 return null;
             }
@@ -106,6 +109,11 @@ public class Rule {
         private long delay = 0;
         private boolean negateNext;
         private boolean orNext;
+        private RequestCache requestCache;
+
+        protected void setRequestCache(RequestCache request) {
+            this.requestCache = request;
+        }
 
         public Builder get() {
             method(GET);
@@ -258,7 +266,7 @@ public class Rule {
         }
 
         public Builder requestBodyMatches(Pattern pattern) {
-            matches(new RequestBodyMatcher(pattern));
+            matches(new BodyMatcher(pattern));
             return this;
         }
 
@@ -372,7 +380,7 @@ public class Rule {
         }
 
         public void answer(RuleAnswer answer) {
-            onBuild(new Rule(Collections.unmodifiableList(matchers), answer, times, delay));
+            onBuild(new Rule(Collections.unmodifiableList(matchers), answer, times, delay, requestCache));
         }
 
         void onBuild(Rule rule) {
@@ -396,7 +404,7 @@ public class Rule {
                 if (delay < 0) {
                     throw new IllegalStateException("Delay can't be less than 0!");
                 }
-                return new Rule(Collections.unmodifiableList(matchers), this, times, delay);
+                return new Rule(Collections.unmodifiableList(matchers), this, times, delay, requestCache);
             }
 
             @Override
