@@ -1,12 +1,6 @@
 package okhttp3.mock;
 
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okhttp3.RequestBody;
+import okhttp3.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -97,7 +91,7 @@ public class MockInterceptorITTest {
 
 
     @Test
-    public void testRequestBody() throws IOException {
+    public void testBody() throws IOException {
         String request1 = "{ \"id\":1, \"bio\":\"bio here\" }";
         String request2 = "{ \"id\":1 }";
 
@@ -106,12 +100,12 @@ public class MockInterceptorITTest {
 
         interceptor.addRule()
                 .post(TEST_URL)
-                .requestBody(request1)
+                .body(request1)
                 .respond(expectedResponse1);
 
         interceptor.addRule()
                 .delete(TEST_URL)
-                .requestBody(request2)
+                .body(request2)
                 .respond(ResponseBody.create(expectedResponse2, MEDIATYPE_JSON));
 
         Response response1 = client.newCall(new Request.Builder()
@@ -133,11 +127,11 @@ public class MockInterceptorITTest {
 
 
     @Test(expected = AssertionError.class)
-    public void testRequestBody_Fail() throws IOException {
+    public void testBody_Fail() throws IOException {
         String requestBody = "{ \"id\":1, \"bio\":\"bio here\" }";
         interceptor.addRule()
                 .post(TEST_URL)
-                .requestBody("")
+                .body("")
                 .respond(TEST_RESPONSE);
 
         client.newCall(new Request.Builder()

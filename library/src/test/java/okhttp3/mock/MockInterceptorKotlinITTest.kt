@@ -9,7 +9,6 @@ import okhttp3.mock.ClasspathResources.resource
 import okhttp3.mock.MediaTypes.MEDIATYPE_JSON
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.lang.IllegalStateException
 
 class MockInterceptorKotlinITTest {
     private val interceptor by lazy { MockInterceptor(Behavior.UNORDERED) }
@@ -132,11 +131,11 @@ class MockInterceptorKotlinITTest {
         val request1 = """{ "id": 1, "name": "name here" }"""
         val request2 = """{ "id" : 1 }"""
 
-        val expectedResponse1 = TEST_RESPONSE
-        val expectedResponse2 = request1
+        val expectedResponse1 = "it`s request 1!"
+        val expectedResponse2 = "it`s request 2!"
 
-        interceptor.rule(post, url eq TEST_URL, requestBody eq request1, times = anyTimes) { respond(expectedResponse1.toResponseBody(MEDIATYPE_JSON)) }
-        interceptor.rule(delete, url eq TEST_URL, requestBody eq request2, times = anyTimes) { respond(expectedResponse2.toResponseBody(MEDIATYPE_JSON)) }
+        interceptor.rule(post, url eq TEST_URL, body eq request1, times = anyTimes) { respond(expectedResponse1.toResponseBody(MEDIATYPE_JSON)) }
+        interceptor.rule(delete, url eq TEST_URL, body eq request2, times = anyTimes) { respond(expectedResponse2.toResponseBody(MEDIATYPE_JSON)) }
 
         val response1 = client.newCall(Request.Builder().url(TEST_URL).post(request1.toRequestBody(MEDIATYPE_JSON)).build()).execute()
         assertEquals(expectedResponse1, response1.body!!.string())
@@ -146,13 +145,12 @@ class MockInterceptorKotlinITTest {
 
     }
 
-
     @Test(expected = AssertionError::class)
     fun testRequestBody_Fail() {
-        val body = """{ "id": 1, "name": "name here" }"""
-        val reqBody = body.toRequestBody(MEDIATYPE_JSON)
+        val json = """{ "id": 1, "name": "name here" }"""
+        val reqBody = json.toRequestBody(MEDIATYPE_JSON)
 
-        interceptor.rule(post, url eq TEST_URL, requestBody eq "", times = anyTimes) { respond(TEST_RESPONSE) }
+        interceptor.rule(post, url eq TEST_URL, body eq "", times = anyTimes) { respond(TEST_RESPONSE) }
 
         client.newCall(Request.Builder().url(TEST_URL).post(reqBody).build()).execute()
     }

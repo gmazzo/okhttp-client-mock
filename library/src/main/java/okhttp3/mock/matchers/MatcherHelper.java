@@ -20,7 +20,7 @@ public final class MatcherHelper {
         return Pattern.compile("^.*" + Pattern.quote(text) + "$");
     }
 
-    public static String reason(String expected, String actual) {
+    public static String reason(CharSequence expected, CharSequence actual) {
         return "expected=" + expected + ";actual=" + actual;
     }
 

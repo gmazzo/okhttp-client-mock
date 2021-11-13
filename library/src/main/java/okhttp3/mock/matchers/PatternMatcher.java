@@ -1,8 +1,8 @@
 package okhttp3.mock.matchers;
 
-import java.util.regex.Pattern;
-
 import okhttp3.Request;
+
+import java.util.regex.Pattern;
 
 import static okhttp3.mock.matchers.MatcherHelper.reason;
 
@@ -13,17 +13,17 @@ public abstract class PatternMatcher implements Matcher {
         this.pattern = pattern;
     }
 
-    protected abstract String getText(Request request);
+    protected abstract CharSequence getText(Request request);
 
     @Override
     public boolean matches(Request request) {
-        String text = getText(request);
+        CharSequence text = getText(request);
         return text != null && pattern.matcher(text).matches();
     }
 
     @Override
     public String failReason(Request request) {
-        String actual = getText(request);
+        CharSequence actual = getText(request);
         return reason(pattern.pattern(), actual);
     }
 

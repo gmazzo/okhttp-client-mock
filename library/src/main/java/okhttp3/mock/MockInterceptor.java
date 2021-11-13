@@ -101,7 +101,6 @@ public class MockInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        RequestCache.INSTANCE.setRequest(request);
 
         for (Rule rule : rules) {
             if (rule.isConsumed()) {
