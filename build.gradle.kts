@@ -9,5 +9,5 @@ allprojects {
     }
 
     group = "com.github.gmazzo"
-    version = "1.4.1"
+    version = "1.5.0"
 }
