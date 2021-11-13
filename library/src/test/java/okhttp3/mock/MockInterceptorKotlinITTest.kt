@@ -1,16 +1,14 @@
 package okhttp3.mock
 
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.ResponseBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.mock.ClasspathResources.resource
 import okhttp3.mock.MediaTypes.MEDIATYPE_JSON
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.lang.IllegalStateException
 
 class MockInterceptorKotlinITTest {
     private val interceptor by lazy { MockInterceptor(Behavior.UNORDERED) }
@@ -126,6 +124,35 @@ class MockInterceptorKotlinITTest {
         assertEquals(MediaTypes.MEDIATYPE_XML.subtype, response.body!!.contentType()!!.subtype)
         assertEquals("aValue", response.header("Test"))
         assertEquals("<html/>", response.body!!.string())
+    }
+
+    @Test
+    fun testRequestBody() {
+        val request1 = """{ "id": 1, "name": "name here" }"""
+        val request2 = """{ "id" : 1 }"""
+
+        val expectedResponse1 = "it`s request 1!"
+        val expectedResponse2 = "it`s request 2!"
+
+        interceptor.rule(post, url eq TEST_URL, body eq request1, times = anyTimes) { respond(expectedResponse1.toResponseBody(MEDIATYPE_JSON)) }
+        interceptor.rule(delete, url eq TEST_URL, body eq request2, times = anyTimes) { respond(expectedResponse2.toResponseBody(MEDIATYPE_JSON)) }
+
+        val response1 = client.newCall(Request.Builder().url(TEST_URL).post(request1.toRequestBody(MEDIATYPE_JSON)).build()).execute()
+        assertEquals(expectedResponse1, response1.body!!.string())
+
+        val response2 = client.newCall(Request.Builder().url(TEST_URL).delete(request2.toRequestBody(MEDIATYPE_JSON)).build()).execute()
+        assertEquals(expectedResponse2, response2.body!!.string())
+
+    }
+
+    @Test(expected = AssertionError::class)
+    fun testRequestBody_Fail() {
+        val json = """{ "id": 1, "name": "name here" }"""
+        val reqBody = json.toRequestBody(MEDIATYPE_JSON)
+
+        interceptor.rule(post, url eq TEST_URL, body eq "", times = anyTimes) { respond(TEST_RESPONSE) }
+
+        client.newCall(Request.Builder().url(TEST_URL).post(reqBody).build()).execute()
     }
 
     @Test(expected = AssertionError::class)

@@ -1,3 +1,4 @@
+@file:JvmName("Rules")
 @file:Suppress("ClassName", "unused")
 
 package okhttp3.mock
@@ -7,6 +8,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.asResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
+import okhttp3.mock.matchers.BodyMatcher
 import okhttp3.mock.matchers.HeaderMatcher
 import okhttp3.mock.matchers.Matcher
 import okhttp3.mock.matchers.MatcherHelper.any
@@ -26,6 +28,8 @@ import java.util.regex.Pattern
 
 object url
 object path
+object body
+
 data class param(val name: String)
 data class header(val name: String)
 
@@ -42,6 +46,7 @@ const val anyTimes = Integer.MAX_VALUE
 fun method(@HttpMethod method: String) = MethodMatcher(method)
 fun url(value: String) = url eq value
 fun path(value: String) = path eq value
+fun body(value: String) = body eq value
 fun not(matcher: Matcher) = NotMatcher(matcher)
 fun has(param: param) = param(param.name) matches any
 fun has(header: header) = header(header.name) matches any
@@ -59,6 +64,10 @@ infix fun path.startWith(path: String) = matches(prefix(path))
 infix fun path.endsWith(path: String) = matches(suffix(path))
 infix fun path.matches(pattern: Pattern) = PathMatcher(pattern)
 infix fun path.matches(regex: Regex) = matches(regex.toPattern())
+
+infix fun body.eq(body: String) = matches(exact(body))
+infix fun body.matches(pattern: Pattern) = BodyMatcher(pattern)
+infix fun body.matches(regex: Regex) = matches(regex.toPattern())
 
 infix fun header.eq(value: String) = matches(exact(value))
 infix fun header.matches(pattern: Pattern) = HeaderMatcher(name, pattern)
@@ -112,3 +121,5 @@ fun Rule.Builder.respond(answer: RuleAnswer): Response.Builder {
     answer(answer)
     return dummyResponse
 }
+
+internal fun assertThat(value: Boolean, lazyMessage: () -> Any) = check(value, lazyMessage)

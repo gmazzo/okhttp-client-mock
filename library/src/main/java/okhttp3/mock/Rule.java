@@ -2,44 +2,21 @@ package okhttp3.mock;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import okhttp3.MediaType;
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okhttp3.mock.matchers.HeaderMatcher;
-import okhttp3.mock.matchers.Matcher;
-import okhttp3.mock.matchers.MethodMatcher;
-import okhttp3.mock.matchers.NotMatcher;
-import okhttp3.mock.matchers.OrMatcher;
-import okhttp3.mock.matchers.PathMatcher;
-import okhttp3.mock.matchers.QueryParamMatcher;
-import okhttp3.mock.matchers.URLMatcher;
+import okhttp3.*;
+import okhttp3.mock.matchers.*;
 import okio.Buffer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.Charset;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static okhttp3.mock.HttpCodes.HTTP_200_OK;
-import static okhttp3.mock.HttpMethod.DELETE;
-import static okhttp3.mock.HttpMethod.GET;
-import static okhttp3.mock.HttpMethod.HEAD;
-import static okhttp3.mock.HttpMethod.OPTIONS;
-import static okhttp3.mock.HttpMethod.PATCH;
-import static okhttp3.mock.HttpMethod.POST;
-import static okhttp3.mock.HttpMethod.PUT;
+import static okhttp3.mock.HttpMethod.*;
 import static okhttp3.mock.MediaTypes.MEDIATYPE_RAW_DATA;
 import static okhttp3.mock.MediaTypes.MEDIATYPE_TEXT;
-import static okhttp3.mock.matchers.MatcherHelper.any;
-import static okhttp3.mock.matchers.MatcherHelper.exact;
-import static okhttp3.mock.matchers.MatcherHelper.prefix;
-import static okhttp3.mock.matchers.MatcherHelper.suffix;
+import static okhttp3.mock.matchers.MatcherHelper.*;
 
 public class Rule {
     private final List<Matcher> matchers;
@@ -59,6 +36,7 @@ public class Rule {
             return null;
         }
         for (Matcher matcher : matchers) {
+
             if (!matcher.matches(request)) {
                 return null;
             }
@@ -248,6 +226,24 @@ public class Rule {
 
         public Builder param(String param, String value) {
             paramMatches(param, exact(value));
+            return this;
+        }
+
+        public Builder body(String value) {
+            return body(value, null);
+        }
+
+        public Builder body(String value, Charset charset) {
+            bodyMatches(exact(value), charset);
+            return this;
+        }
+
+        public Builder bodyMatches(Pattern pattern) {
+            return bodyMatches(pattern, null);
+        }
+
+        public Builder bodyMatches(Pattern pattern, Charset charset) {
+            matches(new BodyMatcher(pattern, charset));
             return this;
         }
 

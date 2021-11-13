@@ -1,12 +1,6 @@
 package okhttp3.mock;
 
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okhttp3.RequestBody;
+import okhttp3.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -95,6 +89,58 @@ public class MockInterceptorITTest {
                 .execute();
     }
 
+
+    @Test
+    public void testBody() throws IOException {
+        String request1 = "{ \"id\":1, \"bio\":\"bio here\" }";
+        String request2 = "{ \"id\":1 }";
+
+        String expectedResponse1 = TEST_RESPONSE;
+        String expectedResponse2 = request1;
+
+        interceptor.addRule()
+                .post(TEST_URL)
+                .body(request1)
+                .respond(expectedResponse1);
+
+        interceptor.addRule()
+                .delete(TEST_URL)
+                .body(request2)
+                .respond(ResponseBody.create(expectedResponse2, MEDIATYPE_JSON));
+
+        Response response1 = client.newCall(new Request.Builder()
+                .url(TEST_URL)
+                .post(RequestBody.create(request1, MEDIATYPE_JSON))
+                .build())
+                .execute();
+
+        assertEquals(expectedResponse1, response1.body().string());
+
+        Response response2 = client.newCall(new Request.Builder()
+                .url(TEST_URL)
+                .delete(RequestBody.create(request2, MEDIATYPE_JSON))
+                .build())
+                .execute();
+
+        assertEquals(expectedResponse2, response2.body().string());
+    }
+
+
+    @Test(expected = AssertionError.class)
+    public void testBody_Fail() throws IOException {
+        String requestBody = "{ \"id\":1, \"bio\":\"bio here\" }";
+        interceptor.addRule()
+                .post(TEST_URL)
+                .body("")
+                .respond(TEST_RESPONSE);
+
+        client.newCall(new Request.Builder()
+                .url(TEST_URL)
+                .post(RequestBody.create(requestBody, MEDIATYPE_JSON))
+                .build())
+                .execute();
+    }
+
     @Test
     public void testResourceResponse() throws IOException {
         interceptor.addRule()
@@ -137,6 +183,7 @@ public class MockInterceptorITTest {
         assertEquals("aValue", response.header("Test"));
         assertEquals("<html/>", response.body().string());
     }
+
 
     @Test(expected = IllegalStateException.class)
     public void testWrongOrSyntax1() {
