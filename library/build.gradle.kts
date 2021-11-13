@@ -2,9 +2,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version embeddedKotlinVersion
-    id("jacoco")
-    id("signing")
-    id("maven-publish")
+    jacoco
+    signing
+    `maven-publish`
     id("org.ajoberstar.grgit") version "4.1.0"
     id("name.remal.maven-publish-nexus-staging") version "1.1.6"
 }
@@ -16,14 +16,14 @@ dependencies {
         testImplementation(notation)
     }
 
-    compileOnlyAndTests("com.squareup.okhttp3:okhttp:4.9.1")
-    compileOnlyAndTests("org.robolectric:robolectric:4.5.1")
-    compileOnlyAndTests("com.android.support:support-annotations:25.3.1")
-    compileOnlyAndTests("com.google.android:android:2.2.1")
+    compileOnlyAndTests("com.squareup.okhttp3:okhttp:4.9.2")
+    compileOnlyAndTests("org.robolectric:robolectric:4.6.1")
+    compileOnlyAndTests("com.android.support:support-annotations:28.0.0")
+    compileOnlyAndTests("com.google.android:android:4.1.1.4")
 
     implementation(kotlin("stdlib"))
 
-    testImplementation("junit:junit:4.13.1")
+    testImplementation("junit:junit:4.13.2")
 }
 
 tasks.withType<JacocoReport> {
