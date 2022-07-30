@@ -54,7 +54,7 @@ MockInterceptor interceptor = new MockInterceptor();
 interceptor.addRule()
         .get().or().post().or().put()
         .url("https://testserver/api/login")
-        .respond(HTTP_401_UNAUTHORIZED))
+        .respond(HTTP_401_UNAUTHORIZED)
         .header("WWW-Authenticate", "Basic");
 
 interceptor.addRule()
