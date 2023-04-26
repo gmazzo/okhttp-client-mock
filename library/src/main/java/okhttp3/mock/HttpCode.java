@@ -1,6 +1,6 @@
 package okhttp3.mock;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import static okhttp3.mock.HttpCode.HTTP_200_OK;
 import static okhttp3.mock.HttpCode.HTTP_204_NO_CONTENT;

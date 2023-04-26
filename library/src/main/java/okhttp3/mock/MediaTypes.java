@@ -1,7 +1,7 @@
 package okhttp3.mock;
 
-import android.support.annotation.NonNull;
 
+import androidx.annotation.NonNull;
 import okhttp3.MediaType;
 
 @SuppressWarnings("ConstantConditions")

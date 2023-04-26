@@ -1,7 +1,7 @@
 package okhttp3.mock;
 
 import android.content.Context;
-import android.support.annotation.RawRes;
+import androidx.annotation.RawRes;
 
 import java.io.IOException;
 import java.io.InputStream;

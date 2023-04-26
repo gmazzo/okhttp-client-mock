@@ -1,6 +1,6 @@
 package okhttp3.mock;
 
-import android.support.annotation.RawRes;
+import androidx.annotation.RawRes;
 import org.robolectric.RuntimeEnvironment;
 
 import java.io.InputStream;

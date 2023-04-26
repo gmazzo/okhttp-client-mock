@@ -1,6 +1,6 @@
 package okhttp3.mock;
 
-import android.support.annotation.StringDef;
+import androidx.annotation.StringDef;
 
 import static okhttp3.mock.HttpMethod.DELETE;
 import static okhttp3.mock.HttpMethod.GET;
