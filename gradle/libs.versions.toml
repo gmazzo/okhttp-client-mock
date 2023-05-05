@@ -6,7 +6,7 @@ android = { module = "com.google.android:android", version = "4.1.1.4" }
 android-annotations = { module = "androidx.annotation:annotation", version = "1.6.0" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version = "4.11.0" }
-robolectric = { module = "org.robolectric:robolectric", version = "4.10" }
+robolectric = { module = "org.robolectric:robolectric", version = "4.10.2" }
 
 [plugins]
 dokka = { id = "org.jetbrains.dokka", version = "1.8.10" }
