@@ -1,19 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin) apply false
-    alias(libs.plugins.gitVersioning)
     alias(libs.plugins.gradle.nexusPublish)
-}
-
-gitVersioning.apply {
-    refs {
-        branch(".+") {
-            describeTagPattern = "v(?<version>.*)"
-            version = "\${describe.tag.version}-SNAPSHOT"
-        }
-        tag("v(?<version>.*)") {
-            version = "\${ref.version}"
-        }
-    }
+    `git-versioning`
 }
 
 nexusPublishing {

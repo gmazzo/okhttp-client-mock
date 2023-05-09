@@ -10,7 +10,6 @@ robolectric = { module = "org.robolectric:robolectric", version = "4.10.2" }
 
 [plugins]
 dokka = { id = "org.jetbrains.dokka", version = "1.8.10" }
-gitVersioning = { id = "me.qoomon.git-versioning", version = "6.4.2" }
 gradle-nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version = "1.3.0" }
 gradle-pluginPublish = { id = "com.gradle.plugin-publish", version = "1.2.0" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
