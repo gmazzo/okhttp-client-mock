@@ -15,4 +15,8 @@ nexusPublishing {
 
 allprojects {
     group = "com.github.gmazzo.okhttp.mock"
+
+    tasks.withType<JacocoReport>().configureEach {
+        reports.xml.required = true
+    }
 }
