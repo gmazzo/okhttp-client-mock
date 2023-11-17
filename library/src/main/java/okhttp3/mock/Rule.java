@@ -12,7 +12,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static okhttp3.mock.HttpCodes.HTTP_200_OK;
+import static okhttp3.mock.HttpCode.HTTP_200_OK;
 import static okhttp3.mock.HttpMethod.*;
 import static okhttp3.mock.MediaTypes.MEDIATYPE_RAW_DATA;
 import static okhttp3.mock.MediaTypes.MEDIATYPE_TEXT;
