@@ -12,8 +12,8 @@ java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 
 dependencies {
     val compileOnlyAndTests by configurations.creating { isCanBeConsumed = true }
-    configurations.compileOnly { extendsFrom(compileOnlyAndTests) }
-    configurations.testImplementation { extendsFrom(compileOnlyAndTests) }
+    configurations.compileOnly.configure { extendsFrom(compileOnlyAndTests) }
+    configurations.testImplementation.configure { extendsFrom(compileOnlyAndTests) }
 
     compileOnlyAndTests(libs.okhttp)
     compileOnlyAndTests(libs.android)
