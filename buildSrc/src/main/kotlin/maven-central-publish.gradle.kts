@@ -48,6 +48,7 @@ fun MavenPublication.setupMandatoryPOMAttributes() {
             .exec { commandLine("git", "remote", "get-url", "origin") }
             .standardOutput
             .asText
+            .map { it.trim() }
 
         name.set("${rootProject.name}-${project.name}")
         description.set(project.description)
