@@ -11,6 +11,6 @@ robolectric = { module = "org.robolectric:robolectric", version = "4.13" }
 [plugins]
 dokka = { id = "org.jetbrains.dokka", version = "1.9.20" }
 gradle-nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version = "2.0.0" }
-gradle-pluginPublish = { id = "com.gradle.plugin-publish", version = "1.2.1" }
+gradle-pluginPublish = { id = "com.gradle.plugin-publish", version = "1.2.2" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 publicationsReport = { id = "io.github.gmazzo.publications.report", version = "1.2.8" }
