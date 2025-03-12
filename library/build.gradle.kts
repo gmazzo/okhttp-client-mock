@@ -1,19 +1,13 @@
-import org.gradle.api.publish.maven.internal.publication.MavenPomInternal
-import org.gradle.api.publish.maven.internal.publication.MavenPublicationInternal
-import org.gradle.kotlin.dsl.support.serviceOf
-import org.jetbrains.kotlin.gradle.utils.extendsFrom
-
 plugins {
     alias(libs.plugins.kotlin)
-    `maven-central-publish`
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.mavenPublish)
     jacoco
 }
 
 description = "A simple OKHttp client mock, using a programmable request interceptor"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
-
-val legacyPOM by configurations.creating
 
 dependencies {
     val compileOnlyAndTests by configurations.creating { isCanBeConsumed = true }
@@ -26,33 +20,67 @@ dependencies {
     compileOnlyAndTests(libs.robolectric)
 
     testImplementation(libs.kotlin.test)
-
-    legacyPOM(project)
 }
 
-publishing.publications {
-    create<MavenPublication>("java") { from(components["java"]) }
+val originUrl = providers
+    .exec { commandLine("git", "remote", "get-url", "origin") }
+    .standardOutput.asText.map { it.trim() }
 
-    create<MavenPublication>("legacy") {
-        from(serviceOf<SoftwareComponentFactory>().adhoc("legacy").apply {
-            addVariantsFromConfiguration(legacyPOM) {
-                mapToMavenScope("compile")
+mavenPublishing {
+    signAllPublications()
+    publishToMavenCentral("CENTRAL_PORTAL", automaticRelease = true)
+
+    pom {
+        name = "${rootProject.name}-${project.name}"
+        description = provider { project.description }
+        url = originUrl
+
+        licenses {
+            license {
+                name = "MIT License"
+                url = "https://opensource.org/license/mit/"
             }
-        })
-        groupId = "com.github.gmazzo"
-        artifactId = "okhttp-mock"
-        (this as MavenPublicationInternal).isAlias = true
-        pom {
-            name.set("${project.name} (deprecated)")
-            description.set("Deprecated: replaced by com.github.gmazzo.okhttp.mock:mock-client:$version")
+        }
+
+        developers {
+            developer {
+                id = "gmazzo"
+                name = id
+                email = "gmazzo65@gmail.com"
+            }
+        }
+
+        scm {
+            connection = originUrl
+            developerConnection = originUrl
+            url = originUrl
         }
     }
 }
 
-tasks.named("generateMetadataFileForLegacyPublication") {
-    enabled = false
+// relocation POM for legacy coordinates
+afterEvaluate {
+    publishing.publications {
+        val maven = named<MavenPublication>("maven")
+
+        register<MavenPublication>("legacy") {
+            groupId = "com.github.gmazzo"
+            artifactId = "okhttp-mock"
+
+            pom {
+                name = maven.map { "$it (deprecated)" }
+                description = maven.map { "Deprecated: replaced by ${it.groupId}:${it.artifactId}" }
+                distributionManagement {
+                    relocation {
+                        groupId = maven.map { it.groupId }
+                        artifactId = maven.map { it.artifactId }
+                    }
+                }
+            }
+        }
+    }
 }
 
-tasks.check {
-    dependsOn(tasks.jacocoTestReport)
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
 }
