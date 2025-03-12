@@ -27,7 +27,6 @@ val originUrl = providers
     .standardOutput.asText.map { it.trim() }
 
 mavenPublishing {
-    signAllPublications()
     publishToMavenCentral("CENTRAL_PORTAL", automaticRelease = true)
 
     pom {
