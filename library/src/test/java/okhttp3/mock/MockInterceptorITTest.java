@@ -1,6 +1,12 @@
 package okhttp3.mock;
 
-import okhttp3.*;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,34 +28,34 @@ public class MockInterceptorITTest {
     @Before
     public void setup() {
         client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor = new MockInterceptor(Behavior.UNORDERED))
-                .build();
+            .addInterceptor(interceptor = new MockInterceptor(Behavior.UNORDERED))
+            .build();
     }
 
     @Test
     public void testGet() throws IOException {
         interceptor.addRule()
-                .get(TEST_URL)
-                .respond(TEST_RESPONSE);
+            .get(TEST_URL)
+            .respond(TEST_RESPONSE);
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
                 .get()
                 .build())
-                .execute();
+            .execute();
     }
 
     @Test
     public void testGetMultipleTimes() throws IOException {
         interceptor.addRule()
-                .get(TEST_URL)
-                .anyTimes()
-                .respond(TEST_RESPONSE);
+            .get(TEST_URL)
+            .anyTimes()
+            .respond(TEST_RESPONSE);
 
         String first = null;
         for (int i = 0; i < 10; i++) {
             String actual = client.newCall(new Request.Builder().url(TEST_URL).get().build())
-                    .execute().body().string();
+                .execute().body().string();
 
             if (first == null) {
                 first = actual;
@@ -63,30 +69,30 @@ public class MockInterceptorITTest {
     @Test
     public void testURLStartsWith() throws IOException {
         interceptor.addRule()
-                .get()
-                .urlStarts("https://")
-                .respond(TEST_RESPONSE);
+            .get()
+            .urlStarts("https://")
+            .respond(TEST_RESPONSE);
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
                 .get()
                 .build())
-                .execute();
+            .execute();
     }
 
     @Test(expected = AssertionError.class)
     public void testURLStartsWith_Fail() throws IOException {
         interceptor.addRule()
-                .get()
-                .urlStarts("http://")
-                .respond(TEST_RESPONSE)
-                .code(HTTP_401_UNAUTHORIZED);
+            .get()
+            .urlStarts("http://")
+            .respond(TEST_RESPONSE)
+            .code(HTTP_401_UNAUTHORIZED);
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
                 .get()
                 .build())
-                .execute();
+            .execute();
     }
 
 
@@ -99,20 +105,20 @@ public class MockInterceptorITTest {
         String expectedResponse2 = request1;
 
         interceptor.addRule()
-                .post(TEST_URL)
-                .body(request1)
-                .respond(expectedResponse1);
+            .post(TEST_URL)
+            .body(request1)
+            .respond(expectedResponse1);
 
         interceptor.addRule()
-                .delete(TEST_URL)
-                .body(request2)
-                .respond(ResponseBody.create(expectedResponse2, MEDIATYPE_JSON));
+            .delete(TEST_URL)
+            .body(request2)
+            .respond(ResponseBody.create(expectedResponse2, MEDIATYPE_JSON));
 
         Response response1 = client.newCall(new Request.Builder()
                 .url(TEST_URL)
                 .post(RequestBody.create(request1, MEDIATYPE_JSON))
                 .build())
-                .execute();
+            .execute();
 
         assertEquals(expectedResponse1, response1.body().string());
 
@@ -120,7 +126,7 @@ public class MockInterceptorITTest {
                 .url(TEST_URL)
                 .delete(RequestBody.create(request2, MEDIATYPE_JSON))
                 .build())
-                .execute();
+            .execute();
 
         assertEquals(expectedResponse2, response2.body().string());
     }
@@ -130,27 +136,27 @@ public class MockInterceptorITTest {
     public void testBody_Fail() throws IOException {
         String requestBody = "{ \"id\":1, \"bio\":\"bio here\" }";
         interceptor.addRule()
-                .post(TEST_URL)
-                .body("")
-                .respond(TEST_RESPONSE);
+            .post(TEST_URL)
+            .body("")
+            .respond(TEST_RESPONSE);
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
                 .post(RequestBody.create(requestBody, MEDIATYPE_JSON))
                 .build())
-                .execute();
+            .execute();
     }
 
     @Test
     public void testResourceResponse() throws IOException {
         interceptor.addRule()
-                .respond(resource("sample.json"));
+            .respond(resource("sample.json"));
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
                 .get()
                 .build())
-                .execute();
+            .execute();
     }
 
     @Test
@@ -158,16 +164,16 @@ public class MockInterceptorITTest {
         final String json = "{\"succeed\":true}";
 
         interceptor.behavior(Behavior.SEQUENTIAL).addRule()
-                .get().or().post().or().put()
-                .respond(json, MEDIATYPE_JSON);
+            .get().or().post().or().put()
+            .respond(json, MEDIATYPE_JSON);
 
         assertEquals(json, client.newCall(new Request.Builder()
                 .url(TEST_URL)
                 .get()
                 .build())
-                .execute()
-                .body()
-                .string());
+            .execute()
+            .body()
+            .string());
     }
 
     @Test
@@ -188,61 +194,61 @@ public class MockInterceptorITTest {
     @Test(expected = IllegalStateException.class)
     public void testWrongOrSyntax1() {
         interceptor.addRule()
-                .or().get()
-                .respond(HttpCode.HTTP_409_CONFLICT);
+            .or().get()
+            .respond(HttpCode.HTTP_409_CONFLICT);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testWrongOrSyntax2() {
         interceptor.addRule()
-                .get().or().or().post()
-                .respond(HttpCode.HTTP_409_CONFLICT);
+            .get().or().or().post()
+            .respond(HttpCode.HTTP_409_CONFLICT);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testWrongNotSyntax1() {
         interceptor.addRule()
-                .put().not()
-                .respond(HttpCode.HTTP_409_CONFLICT);
+            .put().not()
+            .respond(HttpCode.HTTP_409_CONFLICT);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testWrongNotSyntax2() {
         interceptor.addRule()
-                .not().not().put()
-                .respond(HttpCode.HTTP_409_CONFLICT);
+            .not().not().put()
+            .respond(HttpCode.HTTP_409_CONFLICT);
     }
 
     @Test(expected = AssertionError.class)
     public void testFailReasonSequential() throws IOException {
         interceptor.behavior(Behavior.SEQUENTIAL)
-                .addRule()
-                .get().or().post().or().put()
-                .respond("OK");
+            .addRule()
+            .get().or().post().or().put()
+            .respond("OK");
 
         client.newCall(new Request.Builder()
                 .url(TEST_URL)
                 .delete()
                 .build())
-                .execute();
+            .execute();
     }
 
     @Test
     public void testAnswer() throws IOException {
         interceptor.addRule()
-                .get()
-                .pathMatches(Pattern.compile("/aPath/(\\w+)"))
-                .anyTimes()
-                .answer(new RuleAnswer() {
+            .get()
+            .pathMatches(Pattern.compile("/aPath/(\\w+)"))
+            .anyTimes()
+            .answer(new RuleAnswer() {
 
-                    @Override
-                    public Response.Builder respond(Request request) {
-                        return new Response.Builder()
-                                .code(HTTP_200_OK)
-                                .body(ResponseBody.create(null, request.url().encodedPath()));
-                    }
+                @Override
+                public Response.Builder respond(Request request) {
+                    return new Response.Builder()
+                        .code(HTTP_200_OK)
+                        .body(ResponseBody.create(null, request.url().encodedPath()));
+                }
 
-                });
+            });
 
         String[] paths = new String[]{"/aPath/aaa", "/aPath/bbb", "/aPath/ccc"};
         for (String expectedBody : paths) {
@@ -252,9 +258,9 @@ public class MockInterceptorITTest {
                     .url(url)
                     .get()
                     .build())
-                    .execute()
-                    .body()
-                    .string();
+                .execute()
+                .body()
+                .string();
 
             assertEquals(expectedBody, body);
         }
@@ -268,9 +274,9 @@ public class MockInterceptorITTest {
             .respond(TEST_RESPONSE);
 
         client.newCall(new Request.Builder()
-            .url(TEST_URL)
-            .patch(body)
-            .build())
+                .url(TEST_URL)
+                .patch(body)
+                .build())
             .execute();
     }
 }

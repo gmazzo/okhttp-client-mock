@@ -1,9 +1,9 @@
 package okhttp3.mock.matchers;
 
+import okhttp3.Request;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Request;
 
 public class OrMatcher implements Matcher {
     private final List<Matcher> matchers = new ArrayList<>();

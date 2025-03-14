@@ -3,6 +3,8 @@
 
 package okhttp3.mock
 
+import java.io.InputStream
+import java.util.regex.Pattern
 import okhttp3.MediaType
 import okhttp3.Request
 import okhttp3.Response
@@ -23,8 +25,6 @@ import okhttp3.mock.matchers.QueryParamMatcher
 import okhttp3.mock.matchers.URLMatcher
 import okio.Buffer
 import okio.BufferedSource
-import java.io.InputStream
-import java.util.regex.Pattern
 
 object url
 object path
@@ -115,7 +115,7 @@ fun Rule.Builder.respond(
     @HttpCode code: Int = HttpCode.HTTP_200_OK,
     answer: Response.Builder.(Request) -> Response.Builder
 ): Response.Builder =
-    respond (RuleAnswer{ answer(Response.Builder().code(code), it) })
+    respond(RuleAnswer { answer(Response.Builder().code(code), it) })
 
 fun Rule.Builder.respond(answer: RuleAnswer): Response.Builder {
     answer(answer)

@@ -1,8 +1,8 @@
 package okhttp3.mock.matchers;
 
-import java.util.regex.Pattern;
-
 import okhttp3.Request;
+
+import java.util.regex.Pattern;
 
 public class QueryParamMatcher extends PatternMatcher {
     private final String param;
