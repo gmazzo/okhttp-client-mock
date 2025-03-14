@@ -1,11 +1,10 @@
 package okhttp3.mock.matchers;
 
+import okhttp3.Request;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.regex.Pattern;
-
-import okhttp3.Request;
 
 import static okhttp3.mock.matchers.MatcherHelper.any;
 import static okhttp3.mock.matchers.MatcherHelper.exact;
@@ -17,10 +16,10 @@ public class HeaderMatcherTest {
     @Before
     public void setup() {
         request = new Request.Builder()
-                .url("http://test.com")
-                .header("a", "")
-                .header("b", "aValue")
-                .build();
+            .url("http://test.com")
+            .header("a", "")
+            .header("b", "aValue")
+            .build();
     }
 
     private boolean hasHeader(String name) {

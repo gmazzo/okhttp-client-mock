@@ -134,13 +134,27 @@ class MockInterceptorKotlinITTest {
         val expectedResponse1 = "it`s request 1!"
         val expectedResponse2 = "it`s request 2!"
 
-        interceptor.rule(post, url eq TEST_URL, body eq request1, times = anyTimes) { respond(expectedResponse1.toResponseBody(MEDIATYPE_JSON)) }
-        interceptor.rule(delete, url eq TEST_URL, body eq request2, times = anyTimes) { respond(expectedResponse2.toResponseBody(MEDIATYPE_JSON)) }
+        interceptor.rule(
+            post,
+            url eq TEST_URL,
+            body eq request1,
+            times = anyTimes
+        ) { respond(expectedResponse1.toResponseBody(MEDIATYPE_JSON)) }
+        interceptor.rule(
+            delete,
+            url eq TEST_URL,
+            body eq request2,
+            times = anyTimes
+        ) { respond(expectedResponse2.toResponseBody(MEDIATYPE_JSON)) }
 
-        val response1 = client.newCall(Request.Builder().url(TEST_URL).post(request1.toRequestBody(MEDIATYPE_JSON)).build()).execute()
+        val response1 =
+            client.newCall(Request.Builder().url(TEST_URL).post(request1.toRequestBody(MEDIATYPE_JSON)).build())
+                .execute()
         assertEquals(expectedResponse1, response1.body!!.string())
 
-        val response2 = client.newCall(Request.Builder().url(TEST_URL).delete(request2.toRequestBody(MEDIATYPE_JSON)).build()).execute()
+        val response2 =
+            client.newCall(Request.Builder().url(TEST_URL).delete(request2.toRequestBody(MEDIATYPE_JSON)).build())
+                .execute()
         assertEquals(expectedResponse2, response2.body!!.string())
 
     }

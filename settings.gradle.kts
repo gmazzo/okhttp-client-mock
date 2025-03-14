@@ -8,6 +8,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "okhttp-client-mock"
 
-include (":library")
+include(":library")
 
 project(":library").name = "mock-client"

@@ -1,4 +1,5 @@
 # okhttp-client-mock
+
 A simple OKHttp client mock, using a programmable request interceptor
 
 ![GitHub](https://img.shields.io/github/license/gmazzo/okhttp-client-mock)
@@ -8,7 +9,9 @@ A simple OKHttp client mock, using a programmable request interceptor
 [![Users](https://img.shields.io/badge/users_by-Sourcegraph-purple)](https://sourcegraph.com/search?q=content:okhttp-mock\b+content:com.github.gmazzo.okhttp+-repo:github.com/gmazzo/okhttp-client-mock&patternType=regexp)
 
 ## Import
+
 On your `build.gradle` add:
+
 ```groovy
 dependencies {
     testImplementation 'com.github.gmazzo.okhttp.mock:mock-client:<version>'
@@ -16,7 +19,9 @@ dependencies {
 ```
 
 ## Usage
+
 Create an OkHttp request interceptor and record some rules, for instance:
+
 ```kotlin
 val interceptor = MockInterceptor().apply {
 
@@ -49,7 +54,9 @@ val interceptor = MockInterceptor().apply {
 
 }
 ```
+
 Or in Java:
+
 ```java
 MockInterceptor interceptor = new MockInterceptor();
 
@@ -76,16 +83,20 @@ interceptor.addRule()
 ```
 
 Then add the interceptor to your OkHttpClient client and use it as usual:
+
 ```java
 OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
                 .build();
 ```
 
-Check an example [Integration Test](/library/src/test/java/okhttp3/mock/MockInterceptorITTest.java) with mocked HTTP responses
+Check an example [Integration Test](/library/src/test/java/okhttp3/mock/MockInterceptorITTest.java) with mocked HTTP
+responses
 
 You can use the following helper classes to provide mock responses from resources:
+
 - `ClasspathResources.resource` to load content from classpath
 - `AndroidResources.asset` to load content from an Android's asset
 - `AndroidResources.rawRes` to load content from an Android's raw resource
-- `RoboResources.asset` and `RoboResources.rawRes` if you are running [Roboelectric](https://github.com/robolectric/robolectric) tests
+- `RoboResources.asset` and `RoboResources.rawRes` if you are
+  running [Roboelectric](https://github.com/robolectric/robolectric) tests
