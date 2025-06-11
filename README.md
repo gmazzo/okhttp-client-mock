@@ -4,9 +4,11 @@ A simple OKHttp client mock, using a programmable request interceptor
 
 ![GitHub](https://img.shields.io/github/license/gmazzo/okhttp-client-mock)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.gmazzo.okhttp.mock/mock-client)](https://central.sonatype.com/artifact/com.github.gmazzo.okhttp.mock/mock-client)
-[![Build Status](https://github.com/gmazzo/okhttp-client-mock/actions/workflows/build.yaml/badge.svg)](https://github.com/gmazzo/okhttp-client-mock/actions/workflows/build.yaml)
+[![Build Status](https://github.com/gmazzo/okhttp-client-mock/actions/workflows/ci-cd.yaml/badge.svg)](https://github.com/gmazzo/okhttp-client-mock/actions/workflows/ci-cd.yaml)
 [![codecov](https://codecov.io/gh/gmazzo/okhttp-client-mock/branch/master/graph/badge.svg)](https://codecov.io/gh/gmazzo/okhttp-client-mock)
 [![Users](https://img.shields.io/badge/users_by-Sourcegraph-purple)](https://sourcegraph.com/search?q=content:okhttp-mock\b+content:com.github.gmazzo.okhttp+-repo:github.com/gmazzo/okhttp-client-mock&patternType=regexp)
+
+[![Contributors](https://contrib.rocks/image?repo=gmazzo/okhttp-client-mock)](https://github.com/gmazzo/okhttp-client-mock/graphs/contributors)
 
 ## Import
 
