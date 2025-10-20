@@ -9,7 +9,7 @@ okhttp = { module = "com.squareup.okhttp3:okhttp", version = "5.2.1" }
 robolectric = { module = "org.robolectric:robolectric", version = "4.16" }
 
 [plugins]
-dokka = { id = "org.jetbrains.dokka-javadoc", version = "2.0.0" }
+dokka = { id = "org.jetbrains.dokka-javadoc", version = "2.1.0" }
 gitVersion = { id = "io.github.gmazzo.gitversion", version = "1.5.1" }
 gradle-nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version = "2.0.0" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
