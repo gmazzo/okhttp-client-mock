@@ -1,4 +1,4 @@
-name: Build
+name: CI/CD
 on:
   workflow_dispatch:
   push:
@@ -15,8 +15,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  ci-cd:
-    name: CI/CD
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
