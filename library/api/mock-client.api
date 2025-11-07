@@ -1,0 +1,302 @@
+public final class okhttp3/mock/AndroidResources {
+	public static fun asset (Landroid/content/Context;Ljava/lang/String;)Ljava/io/InputStream;
+	public static fun rawRes (Landroid/content/Context;I)Ljava/io/InputStream;
+}
+
+public final class okhttp3/mock/Behavior : java/lang/Enum {
+	public static final field RELAYED Lokhttp3/mock/Behavior;
+	public static final field SEQUENTIAL Lokhttp3/mock/Behavior;
+	public static final field UNORDERED Lokhttp3/mock/Behavior;
+	public static fun valueOf (Ljava/lang/String;)Lokhttp3/mock/Behavior;
+	public static fun values ()[Lokhttp3/mock/Behavior;
+}
+
+public final class okhttp3/mock/ClasspathResources {
+	public static fun resource (Ljava/lang/ClassLoader;Ljava/lang/String;)Ljava/io/InputStream;
+	public static fun resource (Ljava/lang/String;)Ljava/io/InputStream;
+}
+
+public abstract interface annotation class okhttp3/mock/HttpCode : java/lang/annotation/Annotation {
+	public static final field HTTP_200_OK I
+	public static final field HTTP_204_NO_CONTENT I
+	public static final field HTTP_302_FOUND I
+	public static final field HTTP_303_SEE_OTHER I
+	public static final field HTTP_304_NOT_MODIFIED I
+	public static final field HTTP_400_BAD_REQUEST I
+	public static final field HTTP_401_UNAUTHORIZED I
+	public static final field HTTP_403_FORBIDDEN I
+	public static final field HTTP_404_NOT_FOUND I
+	public static final field HTTP_405_METHOD_NOT_ALLOWED I
+	public static final field HTTP_409_CONFLICT I
+	public static final field HTTP_500_INTERNAL_SERVER_ERROR I
+}
+
+public abstract interface annotation class okhttp3/mock/HttpMethod : java/lang/annotation/Annotation {
+	public static final field DELETE Ljava/lang/String;
+	public static final field GET Ljava/lang/String;
+	public static final field HEAD Ljava/lang/String;
+	public static final field OPTIONS Ljava/lang/String;
+	public static final field PATCH Ljava/lang/String;
+	public static final field POST Ljava/lang/String;
+	public static final field PUT Ljava/lang/String;
+}
+
+public abstract interface class okhttp3/mock/MediaTypes {
+	public static final field MEDIATYPE_FORM_DATA Lokhttp3/MediaType;
+	public static final field MEDIATYPE_FORM_URLENCODED Lokhttp3/MediaType;
+	public static final field MEDIATYPE_HTML Lokhttp3/MediaType;
+	public static final field MEDIATYPE_JSON Lokhttp3/MediaType;
+	public static final field MEDIATYPE_RAW_DATA Lokhttp3/MediaType;
+	public static final field MEDIATYPE_TEXT Lokhttp3/MediaType;
+	public static final field MEDIATYPE_XML Lokhttp3/MediaType;
+}
+
+public class okhttp3/mock/MockInterceptor : okhttp3/Interceptor {
+	public fun <init> ()V
+	public fun <init> (Lokhttp3/mock/Behavior;)V
+	public fun addRule ()Lokhttp3/mock/Rule$Builder;
+	public fun addRule (Lokhttp3/Response$Builder;)Lokhttp3/mock/MockInterceptor;
+	public fun addRule (Lokhttp3/mock/Rule;)Lokhttp3/mock/MockInterceptor;
+	public fun behavior ()Lokhttp3/mock/Behavior;
+	public fun behavior (Lokhttp3/mock/Behavior;)Lokhttp3/mock/MockInterceptor;
+	public fun getRules ()Ljava/util/List;
+	public fun intercept (Lokhttp3/Interceptor$Chain;)Lokhttp3/Response;
+	public fun reset ()Lokhttp3/mock/MockInterceptor;
+}
+
+public final class okhttp3/mock/RoboResources {
+	public static fun asset (Ljava/lang/String;)Ljava/io/InputStream;
+	public static fun rawRes (I)Ljava/io/InputStream;
+}
+
+public class okhttp3/mock/Rule {
+	protected fun accept (Lokhttp3/Request;)Lokhttp3/Response;
+	public fun getFailReason (Lokhttp3/Request;)Ljava/util/Map;
+	public fun isConsumed ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public class okhttp3/mock/Rule$Builder {
+	public fun <init> ()V
+	public fun answer (Lokhttp3/mock/RuleAnswer;)V
+	public fun anyTimes ()Lokhttp3/mock/Rule$Builder;
+	public fun body (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun body (Ljava/lang/String;Ljava/nio/charset/Charset;)Lokhttp3/mock/Rule$Builder;
+	public fun bodyMatches (Ljava/util/regex/Pattern;)Lokhttp3/mock/Rule$Builder;
+	public fun bodyMatches (Ljava/util/regex/Pattern;Ljava/nio/charset/Charset;)Lokhttp3/mock/Rule$Builder;
+	public fun delay (J)Lokhttp3/mock/Rule$Builder;
+	public fun delete ()Lokhttp3/mock/Rule$Builder;
+	public fun delete (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun get ()Lokhttp3/mock/Rule$Builder;
+	public fun get (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun hasHeader (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun hasParam (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun head ()Lokhttp3/mock/Rule$Builder;
+	public fun head (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun header (Ljava/lang/String;Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun headerMatches (Ljava/lang/String;Ljava/util/regex/Pattern;)Lokhttp3/mock/Rule$Builder;
+	public fun matches (Lokhttp3/mock/matchers/Matcher;)Lokhttp3/mock/Rule$Builder;
+	public fun method (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun not ()Lokhttp3/mock/Rule$Builder;
+	public fun options ()Lokhttp3/mock/Rule$Builder;
+	public fun options (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun or ()Lokhttp3/mock/Rule$Builder;
+	public fun param (Ljava/lang/String;Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun paramMatches (Ljava/lang/String;Ljava/util/regex/Pattern;)Lokhttp3/mock/Rule$Builder;
+	public fun patch ()Lokhttp3/mock/Rule$Builder;
+	public fun patch (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun path (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun pathEnds (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun pathMatches (Ljava/util/regex/Pattern;)Lokhttp3/mock/Rule$Builder;
+	public fun pathStarts (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun post ()Lokhttp3/mock/Rule$Builder;
+	public fun post (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun put ()Lokhttp3/mock/Rule$Builder;
+	public fun put (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun respond (I)Lokhttp3/Response$Builder;
+	public fun respond (ILokhttp3/ResponseBody;)Lokhttp3/Response$Builder;
+	public fun respond (JLjava/io/InputStream;)Lokhttp3/Response$Builder;
+	public fun respond (JLjava/io/InputStream;Lokhttp3/MediaType;)Lokhttp3/Response$Builder;
+	public fun respond (Ljava/io/InputStream;)Lokhttp3/Response$Builder;
+	public fun respond (Ljava/io/InputStream;Lokhttp3/MediaType;)Lokhttp3/Response$Builder;
+	public fun respond (Ljava/lang/String;)Lokhttp3/Response$Builder;
+	public fun respond (Ljava/lang/String;Lokhttp3/MediaType;)Lokhttp3/Response$Builder;
+	public fun respond (Lokhttp3/ResponseBody;)Lokhttp3/Response$Builder;
+	public fun respond ([B)Lokhttp3/Response$Builder;
+	public fun respond ([BLokhttp3/MediaType;)Lokhttp3/Response$Builder;
+	public fun times (I)Lokhttp3/mock/Rule$Builder;
+	public fun url (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun urlEnds (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+	public fun urlMatches (Ljava/util/regex/Pattern;)Lokhttp3/mock/Rule$Builder;
+	public fun urlStarts (Ljava/lang/String;)Lokhttp3/mock/Rule$Builder;
+}
+
+public abstract interface class okhttp3/mock/RuleAnswer {
+	public abstract fun respond (Lokhttp3/Request;)Lokhttp3/Response$Builder;
+}
+
+public final class okhttp3/mock/Rules {
+	public static final field anyTimes I
+	public static final fun body (Ljava/lang/String;)Lokhttp3/mock/matchers/BodyMatcher;
+	public static final fun body (Lokhttp3/Response$Builder;Ljava/io/InputStream;JLokhttp3/MediaType;)Lokhttp3/Response$Builder;
+	public static final fun body (Lokhttp3/Response$Builder;Ljava/lang/String;Lokhttp3/MediaType;)Lokhttp3/Response$Builder;
+	public static final fun body (Lokhttp3/Response$Builder;Lokio/BufferedSource;JLokhttp3/MediaType;)Lokhttp3/Response$Builder;
+	public static final fun body (Lokhttp3/Response$Builder;[BLokhttp3/MediaType;)Lokhttp3/Response$Builder;
+	public static synthetic fun body$default (Lokhttp3/Response$Builder;Ljava/io/InputStream;JLokhttp3/MediaType;ILjava/lang/Object;)Lokhttp3/Response$Builder;
+	public static synthetic fun body$default (Lokhttp3/Response$Builder;Ljava/lang/String;Lokhttp3/MediaType;ILjava/lang/Object;)Lokhttp3/Response$Builder;
+	public static synthetic fun body$default (Lokhttp3/Response$Builder;Lokio/BufferedSource;JLokhttp3/MediaType;ILjava/lang/Object;)Lokhttp3/Response$Builder;
+	public static synthetic fun body$default (Lokhttp3/Response$Builder;[BLokhttp3/MediaType;ILjava/lang/Object;)Lokhttp3/Response$Builder;
+	public static final fun endsWith (Lokhttp3/mock/path;Ljava/lang/String;)Lokhttp3/mock/matchers/PathMatcher;
+	public static final fun endsWith (Lokhttp3/mock/url;Ljava/lang/String;)Lokhttp3/mock/matchers/URLMatcher;
+	public static final fun eq (Lokhttp3/mock/body;Ljava/lang/String;)Lokhttp3/mock/matchers/BodyMatcher;
+	public static final fun eq (Lokhttp3/mock/header;Ljava/lang/String;)Lokhttp3/mock/matchers/HeaderMatcher;
+	public static final fun eq (Lokhttp3/mock/param;Ljava/lang/String;)Lokhttp3/mock/matchers/QueryParamMatcher;
+	public static final fun eq (Lokhttp3/mock/path;Ljava/lang/String;)Lokhttp3/mock/matchers/PathMatcher;
+	public static final fun eq (Lokhttp3/mock/url;Ljava/lang/String;)Lokhttp3/mock/matchers/URLMatcher;
+	public static final fun getAny ()Ljava/util/regex/Pattern;
+	public static final fun getDelete ()Lokhttp3/mock/matchers/MethodMatcher;
+	public static final fun getGet ()Lokhttp3/mock/matchers/MethodMatcher;
+	public static final fun getHead ()Lokhttp3/mock/matchers/MethodMatcher;
+	public static final fun getOptions ()Lokhttp3/mock/matchers/MethodMatcher;
+	public static final fun getPatch ()Lokhttp3/mock/matchers/MethodMatcher;
+	public static final fun getPost ()Lokhttp3/mock/matchers/MethodMatcher;
+	public static final fun getPut ()Lokhttp3/mock/matchers/MethodMatcher;
+	public static final fun has (Lokhttp3/mock/header;)Lokhttp3/mock/matchers/HeaderMatcher;
+	public static final fun has (Lokhttp3/mock/param;)Lokhttp3/mock/matchers/QueryParamMatcher;
+	public static final fun matches (Lokhttp3/mock/body;Ljava/util/regex/Pattern;)Lokhttp3/mock/matchers/BodyMatcher;
+	public static final fun matches (Lokhttp3/mock/body;Lkotlin/text/Regex;)Lokhttp3/mock/matchers/BodyMatcher;
+	public static final fun matches (Lokhttp3/mock/header;Ljava/util/regex/Pattern;)Lokhttp3/mock/matchers/HeaderMatcher;
+	public static final fun matches (Lokhttp3/mock/header;Lkotlin/text/Regex;)Lokhttp3/mock/matchers/HeaderMatcher;
+	public static final fun matches (Lokhttp3/mock/param;Ljava/util/regex/Pattern;)Lokhttp3/mock/matchers/QueryParamMatcher;
+	public static final fun matches (Lokhttp3/mock/param;Lkotlin/text/Regex;)Lokhttp3/mock/matchers/QueryParamMatcher;
+	public static final fun matches (Lokhttp3/mock/path;Ljava/util/regex/Pattern;)Lokhttp3/mock/matchers/PathMatcher;
+	public static final fun matches (Lokhttp3/mock/path;Lkotlin/text/Regex;)Lokhttp3/mock/matchers/PathMatcher;
+	public static final fun matches (Lokhttp3/mock/url;Ljava/util/regex/Pattern;)Lokhttp3/mock/matchers/URLMatcher;
+	public static final fun matches (Lokhttp3/mock/url;Lkotlin/text/Regex;)Lokhttp3/mock/matchers/URLMatcher;
+	public static final fun method (Ljava/lang/String;)Lokhttp3/mock/matchers/MethodMatcher;
+	public static final fun not (Lokhttp3/mock/matchers/Matcher;)Lokhttp3/mock/matchers/NotMatcher;
+	public static final fun or (Lokhttp3/mock/matchers/Matcher;Lokhttp3/mock/matchers/Matcher;)Lokhttp3/mock/matchers/OrMatcher;
+	public static final fun path (Ljava/lang/String;)Lokhttp3/mock/matchers/PathMatcher;
+	public static final fun respond (Lokhttp3/mock/Rule$Builder;ILkotlin/jvm/functions/Function2;)Lokhttp3/Response$Builder;
+	public static final fun respond (Lokhttp3/mock/Rule$Builder;Lokhttp3/mock/RuleAnswer;)Lokhttp3/Response$Builder;
+	public static synthetic fun respond$default (Lokhttp3/mock/Rule$Builder;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lokhttp3/Response$Builder;
+	public static final fun rule (Lokhttp3/mock/MockInterceptor;[Lokhttp3/mock/matchers/Matcher;Ljava/lang/Integer;Ljava/lang/Long;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun rule$default (Lokhttp3/mock/MockInterceptor;[Lokhttp3/mock/matchers/Matcher;Ljava/lang/Integer;Ljava/lang/Long;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun startWith (Lokhttp3/mock/path;Ljava/lang/String;)Lokhttp3/mock/matchers/PathMatcher;
+	public static final fun startWith (Lokhttp3/mock/url;Ljava/lang/String;)Lokhttp3/mock/matchers/URLMatcher;
+	public static final fun url (Ljava/lang/String;)Lokhttp3/mock/matchers/URLMatcher;
+}
+
+public final class okhttp3/mock/body {
+	public static final field INSTANCE Lokhttp3/mock/body;
+}
+
+public final class okhttp3/mock/header {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lokhttp3/mock/header;
+	public static synthetic fun copy$default (Lokhttp3/mock/header;Ljava/lang/String;ILjava/lang/Object;)Lokhttp3/mock/header;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public class okhttp3/mock/matchers/BodyMatcher : okhttp3/mock/matchers/PatternMatcher {
+	public fun <init> (Ljava/util/regex/Pattern;)V
+	public fun <init> (Ljava/util/regex/Pattern;Ljava/nio/charset/Charset;)V
+	protected synthetic fun getText (Lokhttp3/Request;)Ljava/lang/CharSequence;
+	protected fun getText (Lokhttp3/Request;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public class okhttp3/mock/matchers/HeaderMatcher : okhttp3/mock/matchers/PatternMatcher {
+	public fun <init> (Ljava/lang/String;Ljava/util/regex/Pattern;)V
+	protected synthetic fun getText (Lokhttp3/Request;)Ljava/lang/CharSequence;
+	protected fun getText (Lokhttp3/Request;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class okhttp3/mock/matchers/Matcher {
+	public abstract fun failReason (Lokhttp3/Request;)Ljava/lang/String;
+	public abstract fun matches (Lokhttp3/Request;)Z
+}
+
+public final class okhttp3/mock/matchers/MatcherHelper {
+	public static fun any ()Ljava/util/regex/Pattern;
+	public static fun exact (Ljava/lang/String;)Ljava/util/regex/Pattern;
+	public static fun prefix (Ljava/lang/String;)Ljava/util/regex/Pattern;
+	public static fun reason (Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;
+	public static fun suffix (Ljava/lang/String;)Ljava/util/regex/Pattern;
+}
+
+public class okhttp3/mock/matchers/MethodMatcher : okhttp3/mock/matchers/Matcher {
+	public fun <init> (Ljava/lang/String;)V
+	public fun failReason (Lokhttp3/Request;)Ljava/lang/String;
+	public fun matches (Lokhttp3/Request;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public class okhttp3/mock/matchers/NotMatcher : okhttp3/mock/matchers/Matcher {
+	public fun <init> (Lokhttp3/mock/matchers/Matcher;)V
+	public fun failReason (Lokhttp3/Request;)Ljava/lang/String;
+	public fun matches (Lokhttp3/Request;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public class okhttp3/mock/matchers/OrMatcher : okhttp3/mock/matchers/Matcher {
+	public fun <init> (Lokhttp3/mock/matchers/Matcher;Lokhttp3/mock/matchers/Matcher;)V
+	public fun add (Lokhttp3/mock/matchers/Matcher;)V
+	public fun failReason (Lokhttp3/Request;)Ljava/lang/String;
+	public fun matches (Lokhttp3/Request;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public class okhttp3/mock/matchers/PathMatcher : okhttp3/mock/matchers/PatternMatcher {
+	public fun <init> (Ljava/util/regex/Pattern;)V
+	protected synthetic fun getText (Lokhttp3/Request;)Ljava/lang/CharSequence;
+	protected fun getText (Lokhttp3/Request;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class okhttp3/mock/matchers/PatternMatcher : okhttp3/mock/matchers/Matcher {
+	protected final field pattern Ljava/util/regex/Pattern;
+	public fun <init> (Ljava/util/regex/Pattern;)V
+	public fun failReason (Lokhttp3/Request;)Ljava/lang/String;
+	protected abstract fun getText (Lokhttp3/Request;)Ljava/lang/CharSequence;
+	public fun matches (Lokhttp3/Request;)Z
+}
+
+public class okhttp3/mock/matchers/QueryParamMatcher : okhttp3/mock/matchers/PatternMatcher {
+	public fun <init> (Ljava/lang/String;Ljava/util/regex/Pattern;)V
+	protected synthetic fun getText (Lokhttp3/Request;)Ljava/lang/CharSequence;
+	protected fun getText (Lokhttp3/Request;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public class okhttp3/mock/matchers/URLMatcher : okhttp3/mock/matchers/PatternMatcher {
+	public fun <init> (Ljava/util/regex/Pattern;)V
+	protected synthetic fun getText (Lokhttp3/Request;)Ljava/lang/CharSequence;
+	protected fun getText (Lokhttp3/Request;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class okhttp3/mock/param {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lokhttp3/mock/param;
+	public static synthetic fun copy$default (Lokhttp3/mock/param;Ljava/lang/String;ILjava/lang/Object;)Lokhttp3/mock/param;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class okhttp3/mock/path {
+	public static final field INSTANCE Lokhttp3/mock/path;
+}
+
+public final class okhttp3/mock/url {
+	public static final field INSTANCE Lokhttp3/mock/url;
+}
+
