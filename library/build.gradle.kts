@@ -1,3 +1,8 @@
+@file:OptIn(ExperimentalAbiValidation::class)
+
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
+
 plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.dokka)
@@ -8,6 +13,10 @@ plugins {
 description = "A simple OKHttp client mock, using a programmable request interceptor"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+
+kotlin {
+    abiValidation.enabled = true
+}
 
 dependencies {
     val compileOnlyAndTests by configurations.creating { isCanBeConsumed = true }
@@ -82,4 +91,8 @@ afterEvaluate {
 
 tasks.test {
     finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.check {
+    dependsOn(tasks.checkLegacyAbi)
 }

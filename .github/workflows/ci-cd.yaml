@@ -40,6 +40,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: '**/build/reports/jacoco/**/*.xml'
       - name: Publish
+        if: ${{ !github.event.repository.fork && !github.event.pull_request.head.repo.fork }}
         env:
           ORG_GRADLE_PROJECT_RELEASE_SIGNING_ENABLED: true
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
