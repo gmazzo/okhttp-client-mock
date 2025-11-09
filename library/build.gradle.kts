@@ -16,6 +16,7 @@ java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 
 kotlin {
     abiValidation.enabled = true
+    explicitApi()
 }
 
 dependencies {

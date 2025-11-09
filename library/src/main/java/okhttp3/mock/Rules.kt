@@ -26,58 +26,58 @@ import okhttp3.mock.matchers.URLMatcher
 import okio.Buffer
 import okio.BufferedSource
 
-object url
-object path
-object body
+public object url
+public object path
+public object body
 
-data class param(val name: String)
-data class header(val name: String)
+public data class param(val name: String)
+public data class header(val name: String)
 
-val get = method(HttpMethod.GET)
-val head = method(HttpMethod.HEAD)
-val post = method(HttpMethod.POST)
-val put = method(HttpMethod.PUT)
-val delete = method(HttpMethod.DELETE)
-val options = method(HttpMethod.OPTIONS)
-val patch = method(HttpMethod.PATCH)
-val any: Pattern = any()
-const val anyTimes = Integer.MAX_VALUE
+public val get: MethodMatcher = method(HttpMethod.GET)
+public val head: MethodMatcher = method(HttpMethod.HEAD)
+public val post: MethodMatcher = method(HttpMethod.POST)
+public val put: MethodMatcher = method(HttpMethod.PUT)
+public val delete: MethodMatcher = method(HttpMethod.DELETE)
+public val options: MethodMatcher = method(HttpMethod.OPTIONS)
+public val patch: MethodMatcher = method(HttpMethod.PATCH)
+public val any: Pattern = any()
+public const val anyTimes: Int = Integer.MAX_VALUE
 
-fun method(@HttpMethod method: String) = MethodMatcher(method)
-fun url(value: String) = url eq value
-fun path(value: String) = path eq value
-fun body(value: String) = body eq value
-fun not(matcher: Matcher) = NotMatcher(matcher)
-fun has(param: param) = param(param.name) matches any
-fun has(header: header) = header(header.name) matches any
+public fun method(@HttpMethod method: String): MethodMatcher = MethodMatcher(method)
+public fun url(value: String): URLMatcher = url eq value
+public fun path(value: String): PathMatcher = path eq value
+public fun body(value: String): BodyMatcher = body eq value
+public fun not(matcher: Matcher): NotMatcher = NotMatcher(matcher)
+public fun has(param: param): QueryParamMatcher = param(param.name) matches any
+public fun has(header: header): HeaderMatcher = header(header.name) matches any
 
-infix fun Matcher.or(matcher: Matcher) = OrMatcher(this, matcher)
+public infix fun Matcher.or(matcher: Matcher): OrMatcher = OrMatcher(this, matcher)
 
-infix fun url.eq(url: String) = matches(exact(url))
-infix fun url.startWith(url: String) = matches(prefix(url))
-infix fun url.endsWith(url: String) = matches(suffix(url))
-infix fun url.matches(pattern: Pattern) = URLMatcher(pattern)
-infix fun url.matches(regex: Regex) = matches(regex.toPattern())
+public infix fun url.eq(url: String): URLMatcher = matches(exact(url))
+public infix fun url.startWith(url: String): URLMatcher = matches(prefix(url))
+public infix fun url.endsWith(url: String): URLMatcher = matches(suffix(url))
+public infix fun url.matches(pattern: Pattern): URLMatcher = URLMatcher(pattern)
+public infix fun url.matches(regex: Regex): URLMatcher = matches(regex.toPattern())
 
-infix fun path.eq(path: String) = matches(exact(path))
-infix fun path.startWith(path: String) = matches(prefix(path))
-infix fun path.endsWith(path: String) = matches(suffix(path))
-infix fun path.matches(pattern: Pattern) = PathMatcher(pattern)
-infix fun path.matches(regex: Regex) = matches(regex.toPattern())
+public infix fun path.eq(path: String): PathMatcher = matches(exact(path))
+public infix fun path.startWith(path: String): PathMatcher = matches(prefix(path))
+public infix fun path.endsWith(path: String): PathMatcher = matches(suffix(path))
+public infix fun path.matches(pattern: Pattern): PathMatcher = PathMatcher(pattern)
+public infix fun path.matches(regex: Regex): PathMatcher = matches(regex.toPattern())
 
-infix fun body.eq(body: String) = matches(exact(body))
-infix fun body.matches(pattern: Pattern) = BodyMatcher(pattern)
-infix fun body.matches(regex: Regex) = matches(regex.toPattern())
+public infix fun body.eq(body: String): BodyMatcher = matches(exact(body))
+public infix fun body.matches(pattern: Pattern): BodyMatcher = BodyMatcher(pattern)
+public infix fun body.matches(regex: Regex): BodyMatcher = matches(regex.toPattern())
 
-infix fun header.eq(value: String) = matches(exact(value))
-infix fun header.matches(pattern: Pattern) = HeaderMatcher(name, pattern)
-infix fun header.matches(regex: Regex) = matches(regex.toPattern())
+public infix fun header.eq(value: String): HeaderMatcher = matches(exact(value))
+public infix fun header.matches(pattern: Pattern): HeaderMatcher = HeaderMatcher(name, pattern)
+public infix fun header.matches(regex: Regex): HeaderMatcher = matches(regex.toPattern())
 
-infix fun param.eq(value: String) = matches(exact(value))
-infix fun param.matches(pattern: Pattern) = QueryParamMatcher(name, pattern)
-infix fun param.matches(regex: Regex) = matches(regex.toPattern())
+public infix fun param.eq(value: String): QueryParamMatcher = matches(exact(value))
+public infix fun param.matches(pattern: Pattern): QueryParamMatcher = QueryParamMatcher(name, pattern)
+public infix fun param.matches(regex: Regex): QueryParamMatcher = matches(regex.toPattern())
 
-fun MockInterceptor.rule(
+public fun MockInterceptor.rule(
     vararg allOf: Matcher,
     times: Int? = null,
     delay: Long? = null,
@@ -91,16 +91,16 @@ fun MockInterceptor.rule(
     }
 }
 
-fun Response.Builder.body(content: ByteArray, contentType: MediaType? = null) =
+public fun Response.Builder.body(content: ByteArray, contentType: MediaType? = null): Response.Builder =
     body(content.toResponseBody(contentType))
 
-fun Response.Builder.body(content: String, contentType: MediaType? = null) =
+public fun Response.Builder.body(content: String, contentType: MediaType? = null): Response.Builder =
     body(content.toResponseBody(contentType))
 
-fun Response.Builder.body(content: BufferedSource, contentLength: Long = -1L, contentType: MediaType? = null) =
+public fun Response.Builder.body(content: BufferedSource, contentLength: Long = -1L, contentType: MediaType? = null): Response.Builder =
     body(content.asResponseBody(contentType, contentLength))
 
-fun Response.Builder.body(content: InputStream, contentLength: Long = -1L, contentType: MediaType? = null) =
+public fun Response.Builder.body(content: InputStream, contentLength: Long = -1L, contentType: MediaType? = null): Response.Builder =
     body(Buffer().readFrom(content), contentLength, contentType)
 
 private val dummyResponse = object : Response.Builder() {
@@ -111,13 +111,13 @@ private val dummyResponse = object : Response.Builder() {
 
 }
 
-fun Rule.Builder.respond(
+public fun Rule.Builder.respond(
     @HttpCode code: Int = HttpCode.HTTP_200_OK,
     answer: Response.Builder.(Request) -> Response.Builder
 ): Response.Builder =
     respond(RuleAnswer { answer(Response.Builder().code(code), it) })
 
-fun Rule.Builder.respond(answer: RuleAnswer): Response.Builder {
+public fun Rule.Builder.respond(answer: RuleAnswer): Response.Builder {
     answer(answer)
     return dummyResponse
 }
