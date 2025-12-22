@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.2.21"
+kotlin = "2.3.0"
 
 [libraries]
 android = { module = "com.google.android:android", version = "4.1.1.4" }
