@@ -13,7 +13,7 @@ runs:
       uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
-        java-version: '11'
+        java-version: '17'
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
       with:
