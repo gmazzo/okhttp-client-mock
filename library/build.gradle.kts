@@ -15,7 +15,7 @@ description = "A simple OKHttp client mock, using a programmable request interce
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 
 kotlin {
-    abiValidation.enabled = true
+    abiValidation()
     explicitApi()
 }
 
@@ -92,8 +92,4 @@ afterEvaluate {
 
 tasks.test {
     finalizedBy(tasks.jacocoTestReport)
-}
-
-tasks.check {
-    dependsOn(tasks.checkLegacyAbi)
 }
