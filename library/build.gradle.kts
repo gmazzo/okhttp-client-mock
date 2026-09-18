@@ -12,7 +12,7 @@ plugins {
 
 description = "A simple OKHttp client mock, using a programmable request interceptor"
 
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(libs.versions.java.get().toInt()))
 
 kotlin {
     abiValidation()
